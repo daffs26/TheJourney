@@ -207,7 +207,6 @@ export default function Attendance() {
         })
       )
 
-      addToast('Status kehadiran diperbarui!', 'success')
     } catch (e) {
       addToast('Gagal memperbarui kehadiran', 'error')
     }
