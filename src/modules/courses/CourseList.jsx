@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, BookOpen, Trash2, ChevronRight, Users, Clock, AlertTriangle } from 'lucide-react'
+import { Plus, BookOpen, Trash2, ChevronRight, Users, Calendar } from 'lucide-react'
 import { useCoursesStore } from '../../store/useCoursesStore'
 import { useAppStore } from '../../store/useAppStore'
 import styles from './CourseList.module.css'
@@ -11,12 +11,24 @@ const COURSE_COLORS = [
   '#06B6D4','#EC4899','#14B8A6','#6366F1','#F97316',
 ]
 
-const DEFAULT_FORM = { name: '', code: '', sks: 3, lecturer: '', room: '', color: COURSE_COLORS[0] }
+const DAYS = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu']
+
+const DEFAULT_FORM = {
+  name: '',
+  code: '',
+  sks: 3,
+  lecturer: '',
+  room: '',
+  color: COURSE_COLORS[0],
+  day: 'Senin' // Default day selection
+}
 
 export default function CourseList() {
   const navigate = useNavigate()
   const { courses, loading, fetchCourses, addCourse, deleteCourse } = useCoursesStore()
   const { addToast } = useAppStore()
+
+  const [dayFilter, setDayFilter] = useState('all') // all | Senin - Minggu
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(DEFAULT_FORM)
   const [saving, setSaving] = useState(false)
@@ -24,8 +36,30 @@ export default function CourseList() {
 
   useEffect(() => { fetchCourses() }, [])
 
+  // Process, filter, and sort courses by Day (Monday -> Sunday)
+  const processedCourses = useMemo(() => {
+    const dayOrder = { 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6, 'Minggu': 7 }
+    let list = [...courses]
+
+    // Apply filter
+    if (dayFilter !== 'all') {
+      list = list.filter(c => c.day === dayFilter)
+    }
+
+    // Sort by day order, then by course name
+    return list.sort((a, b) => {
+      const orderA = dayOrder[a.day] || 8
+      const orderB = dayOrder[b.day] || 8
+      if (orderA !== orderB) return orderA - orderB
+      return a.name.localeCompare(b.name)
+    })
+  }, [courses, dayFilter])
+
   const handleAdd = async () => {
-    if (!form.name.trim()) { addToast('Nama mata kuliah wajib diisi!', 'warning'); return }
+    if (!form.name.trim()) {
+      addToast('Nama mata kuliah wajib diisi!', 'warning')
+      return
+    }
     setSaving(true)
     try {
       await addCourse(form)
@@ -59,12 +93,31 @@ export default function CourseList() {
         </button>
       </div>
 
+      {/* Day Bar Filter */}
+      <div className={styles.dayBar}>
+        <button
+          className={`${styles.dayBtn} ${dayFilter === 'all' ? styles.dayBtnActive : ''}`}
+          onClick={() => setDayFilter('all')}
+        >
+          Semua Hari
+        </button>
+        {DAYS.map(d => (
+          <button
+            key={d}
+            className={`${styles.dayBtn} ${dayFilter === d ? styles.dayBtnActive : ''}`}
+            onClick={() => setDayFilter(d)}
+          >
+            {d}
+          </button>
+        ))}
+      </div>
+
       <div className={styles.content}>
         {loading ? (
           <div className={styles.skeletonList}>
             {[1,2,3].map(i => <div key={i} className={`${styles.skeletonCard} skeleton`} />)}
           </div>
-        ) : courses.length === 0 ? (
+        ) : processedCourses.length === 0 ? (
           <EmptyState onAdd={() => setShowForm(true)} />
         ) : (
           <motion.div
@@ -73,7 +126,7 @@ export default function CourseList() {
             animate="show"
             variants={{ show: { transition: { staggerChildren: 0.06 } } }}
           >
-            {courses.map(course => (
+            {processedCourses.map(course => (
               <CourseCard
                 key={course.id}
                 course={course}
@@ -116,6 +169,19 @@ export default function CourseList() {
                   </select>
                 </Field>
               </div>
+
+              {/* Day Selector dropdown */}
+              <Field label="Hari Kuliah *">
+                <select
+                  id="course-day"
+                  className={styles.input}
+                  value={form.day || 'Senin'}
+                  onChange={e => setForm(f => ({ ...f, day: e.target.value }))}
+                >
+                  {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+              </Field>
+
               <Field label="Dosen Pengampu">
                 <input
                   id="course-lecturer"
@@ -139,6 +205,7 @@ export default function CourseList() {
                   {COURSE_COLORS.map(c => (
                     <button
                       key={c}
+                      type="button"
                       className={`${styles.colorDot} ${form.color === c ? styles.colorSelected : ''}`}
                       style={{ background: c }}
                       onClick={() => setForm(f => ({ ...f, color: c }))}
@@ -195,6 +262,9 @@ function CourseCard({ course, onOpen, onDelete }) {
         <div className={styles.cardInfo}>
           <h3 className={styles.cardName}>{course.name}</h3>
           <div className={styles.cardMeta}>
+            {course.day && (
+              <span className={styles.metaTag}>📅 {course.day}</span>
+            )}
             {course.code && <span className={styles.metaTag}>{course.code}</span>}
             <span className={styles.metaTag}>{course.sks} SKS</span>
             {course.lecturer && (
