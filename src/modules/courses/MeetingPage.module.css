@@ -1,0 +1,401 @@
+.page {
+  flex: 1; display: flex; flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: calc(var(--bottom-nav-h) + var(--space-4));
+}
+
+/* Header */
+.header {
+  padding: calc(var(--space-8) + env(safe-area-inset-top, 0px)) var(--space-4) var(--space-4);
+  background: linear-gradient(160deg, var(--course-color, var(--color-primary)) 0%, color-mix(in srgb, var(--course-color, var(--color-primary)) 60%, #000) 100%);
+  display: flex; align-items: flex-start; gap: var(--space-3);
+}
+
+.backBtn {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.25);
+  color: white; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; margin-top: 4px;
+}
+
+.headerInfo { flex: 1; }
+
+.courseName {
+  font-size: var(--font-size-xs);
+  color: rgba(255,255,255,0.7);
+  margin-bottom: var(--space-1);
+}
+
+.meetingTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: white;
+}
+
+/* Info bar */
+.infoBar {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.statusChip {
+  display: flex; align-items: center; gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.statusChip:hover { background: var(--color-border); }
+
+.datePicker {
+  display: flex; align-items: center; gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.dateInput {
+  border: none; background: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-sub);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Notes */
+.notesSection {
+  margin: var(--space-4) var(--space-4) 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.notesHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.notesLabel {
+  display: flex; align-items: center; gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-sub);
+}
+
+.noteActions { display: flex; align-items: center; gap: var(--space-2); }
+
+.noteActionBtn {
+  display: flex; align-items: center; gap: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-primary);
+  color: white; border: none; border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.noteEditBtn {
+  display: flex; align-items: center; gap: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  background: none; border: none; cursor: pointer;
+}
+
+.notesTextarea {
+  width: 100%;
+  padding: var(--space-3);
+  background: var(--color-surface-2);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  resize: vertical; outline: none;
+  transition: border-color var(--transition-fast);
+}
+.notesTextarea:focus { border-color: var(--color-primary); }
+
+.notesText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-sub);
+  line-height: var(--line-height-relaxed);
+  white-space: pre-wrap;
+}
+
+.notesEmpty { color: var(--color-text-muted); font-style: italic; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  margin: var(--space-4) var(--space-4) 0;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+  padding: 4px; gap: 4px;
+}
+
+.tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: var(--space-1);
+  height: 36px;
+  border: none; background: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tabActive {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Content */
+.content { padding: var(--space-4); }
+
+/* Add material */
+.addMatButtons {
+  display: flex; gap: var(--space-2); margin-bottom: var(--space-3);
+}
+
+.addMatBtn {
+  display: flex; align-items: center; gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-primary-pale);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.addMatBtn:hover { background: var(--color-primary); color: white; }
+
+.addMatForm {
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+
+.matInput {
+  width: 100%; height: 40px; padding: 0 var(--space-3);
+  background: var(--color-surface-2); border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md); font-family: var(--font-family);
+  font-size: var(--font-size-sm); color: var(--color-text); outline: none;
+}
+.matInput:focus { border-color: var(--color-primary); }
+
+.matTextarea {
+  width: 100%; padding: var(--space-3);
+  background: var(--color-surface-2); border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md); font-family: var(--font-family);
+  font-size: var(--font-size-sm); color: var(--color-text);
+  outline: none; resize: vertical;
+}
+.matTextarea:focus { border-color: var(--color-primary); }
+
+.matFormActions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+
+.cancelMatBtn {
+  height: 40px; border-radius: var(--radius-lg);
+  background: var(--color-surface-2); border: 1px solid var(--color-border);
+  font-family: var(--font-family); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+  color: var(--color-text-sub); cursor: pointer;
+}
+
+.saveMatBtn {
+  height: 40px; border-radius: var(--radius-lg);
+  background: var(--color-primary); border: none; color: white;
+  font-family: var(--font-family); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+/* Material list */
+.matList { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.matCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-xs);
+}
+
+.matCardHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.matInfo { display: flex; align-items: center; gap: var(--space-2); color: var(--color-text-muted); }
+
+.matName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.matCardActions { display: flex; align-items: center; gap: var(--space-2); }
+
+.aiBtn {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px var(--space-2);
+  background: var(--color-primary-pale);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family); font-size: 11px;
+  font-weight: var(--font-weight-semibold); color: var(--color-primary);
+  cursor: pointer;
+}
+.aiBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.delMatBtn {
+  width: 26px; height: 26px; border-radius: var(--radius-full);
+  background: none; border: none; color: var(--color-text-muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.delMatBtn:hover { background: var(--color-danger-pale); color: var(--color-danger); }
+
+.matLink {
+  font-size: var(--font-size-xs); color: var(--color-primary);
+  word-break: break-all; display: block;
+}
+
+.matContent {
+  font-size: var(--font-size-xs); color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Summary box */
+.summaryBox {
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--color-border-light);
+  padding-top: var(--space-3);
+}
+
+.summaryToggle {
+  display: flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-family); font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold); color: var(--color-primary);
+  background: none; border: none; cursor: pointer;
+  width: 100%; text-align: left;
+}
+
+.summaryContent { overflow: hidden; }
+
+.summaryText {
+  font-size: var(--font-size-xs); color: var(--color-text-sub);
+  line-height: var(--line-height-relaxed);
+  white-space: pre-wrap; font-family: var(--font-family);
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-primary-pale);
+  border-radius: var(--radius-md);
+}
+
+/* Quiz */
+.generateQuizBtn {
+  width: 100%; height: 46px;
+  display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: white; border: none; border-radius: var(--radius-lg);
+  font-family: var(--font-family); font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold); cursor: pointer;
+  box-shadow: var(--shadow-primary); margin-bottom: var(--space-4);
+}
+.generateQuizBtn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.quizList { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.quizCard {
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--shadow-xs);
+}
+
+.quizHeader {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.quizNum {
+  font-size: var(--font-size-xs); font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  background: var(--color-primary-pale); padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.quizQuestion {
+  font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+  color: var(--color-text); margin-bottom: var(--space-3);
+  line-height: var(--line-height-relaxed);
+}
+
+.quizOptions { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.quizOpt {
+  width: 100%; padding: var(--space-3) var(--space-4); text-align: left;
+  background: var(--color-surface-2); border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md); font-family: var(--font-family);
+  font-size: var(--font-size-sm); color: var(--color-text); cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.quizOpt:hover:not(:disabled) { border-color: var(--color-primary); background: var(--color-primary-pale); }
+
+.quizOptCorrect {
+  border-color: var(--color-success) !important;
+  background: var(--color-success-pale) !important;
+  color: var(--color-success) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.quizOptWrong {
+  border-color: var(--color-danger) !important;
+  background: var(--color-danger-pale) !important;
+  color: var(--color-danger) !important;
+}
+
+.quizResult {
+  margin-top: var(--space-3); padding: var(--space-3);
+  border-radius: var(--radius-md); font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.quizCorrect { background: var(--color-success-pale); color: var(--color-success); }
+.quizWrong { background: var(--color-danger-pale); color: var(--color-danger); }
+
+.quizExplain {
+  font-size: var(--font-size-xs); font-weight: var(--font-weight-normal);
+  margin-top: var(--space-1); color: var(--color-text-sub);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Empty tab */
+.emptyTab {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--space-3); padding: var(--space-12) var(--space-8);
+  text-align: center; color: var(--color-text-muted);
+}
+
+.emptyTab p { font-size: var(--font-size-sm); }
+.emptyTab small { font-size: var(--font-size-xs); }

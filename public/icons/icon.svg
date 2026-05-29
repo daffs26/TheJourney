@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Dark navy rounded square background for app icon -->
+  <rect width="512" height="512" rx="96" fill="#0B1120"/>
+
+  <!-- Outer teal oval -->
+  <ellipse cx="256" cy="220" rx="148" ry="185" fill="#0FC5C5"/>
+
+  <!-- White ring 1 -->
+  <ellipse cx="256" cy="220" rx="132" ry="169" fill="#0B1120"/>
+
+  <!-- Inner teal oval -->
+  <ellipse cx="256" cy="220" rx="118" ry="153" fill="#0FC5C5"/>
+
+  <!-- White inner area -->
+  <ellipse cx="256" cy="220" rx="98" ry="132" fill="#0B1120"/>
+
+  <!-- T letter shadow (offset for 3D effect) -->
+  <rect x="210" y="158" width="92" height="18" rx="2" fill="#0FC5C5" opacity="0.35" transform="translate(4,4)"/>
+  <rect x="246" y="176" width="24" height="100" rx="2" fill="#0FC5C5" opacity="0.35" transform="translate(4,4)"/>
+
+  <!-- T letter main -->
+  <rect x="210" y="158" width="92" height="18" rx="2" fill="#0FC5C5"/>
+  <rect x="246" y="176" width="24" height="100" rx="2" fill="#0FC5C5"/>
+
+  <!-- THEJOURNEY text -->
+  <text
+    x="256" y="456"
+    text-anchor="middle"
+    fill="#0FC5C5"
+    font-family="'Arial Black', 'Arial Bold', Arial, sans-serif"
+    font-size="46"
+    font-weight="900"
+    letter-spacing="1"
+  >THEJOURNEY</text>
+</svg>

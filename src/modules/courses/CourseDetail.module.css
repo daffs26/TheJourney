@@ -1,0 +1,243 @@
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: calc(var(--bottom-nav-h) + var(--space-4));
+}
+
+/* Header */
+.header {
+  padding: calc(var(--space-8) + env(safe-area-inset-top, 0px)) var(--space-4) var(--space-5);
+  background: linear-gradient(160deg, var(--course-color, var(--color-primary)) 0%, color-mix(in srgb, var(--course-color, var(--color-primary)) 70%, #000) 100%);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.backBtn {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; margin-top: 2px;
+  transition: background var(--transition-fast);
+}
+.backBtn:hover { background: rgba(255,255,255,0.28); }
+
+.headerInfo { flex: 1; min-width: 0; }
+
+.courseName {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: white;
+  margin-bottom: var(--space-2);
+  line-height: 1.2;
+}
+
+.courseMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: rgba(255,255,255,0.75);
+}
+.courseMeta span { display: flex; align-items: center; gap: 4px; }
+
+/* Attendance Card */
+.attendCard {
+  margin: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.attendHeader {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.attendTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  flex: 1;
+}
+
+.warningBadge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-danger);
+  background: var(--color-danger-pale);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.attendStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.attendStat {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: var(--space-2);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+}
+
+.attendNum {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: 1;
+}
+
+.attendLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.progressBar {
+  height: 6px;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+}
+
+.progressLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Content */
+.content { padding: 0 var(--space-4) var(--space-4); }
+
+.sectionTitle {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-3);
+}
+
+/* Meeting List */
+.meetingList { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.meetingCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--transition-fast);
+}
+.meetingCard:hover { box-shadow: var(--shadow-sm); }
+
+/* Status toggle button */
+.statusBtn {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border-radius: var(--radius-full);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+.statusBtn:active { transform: scale(0.88); }
+
+/* Meeting content */
+.meetingContent {
+  flex: 1; min-width: 0;
+  cursor: pointer;
+}
+
+.meetingTop {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin-bottom: 2px;
+}
+
+.meetingNum {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.meetingDate {
+  display: flex; align-items: center; gap: 3px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.meetingTopic {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Inline topic edit */
+.topicEdit {
+  display: flex; align-items: center; gap: var(--space-1);
+  margin-top: 2px;
+}
+
+.topicInput {
+  flex: 1;
+  height: 28px;
+  padding: 0 var(--space-2);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+  outline: none;
+}
+
+.saveTopicBtn, .cancelTopicBtn {
+  width: 24px; height: 24px;
+  border-radius: var(--radius-sm);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.saveTopicBtn { background: var(--color-success); color: white; }
+.cancelTopicBtn { background: var(--color-surface-2); color: var(--color-text-muted); }
+
+/* Actions */
+.meetingActions { display: flex; align-items: center; gap: var(--space-1); }
+
+.editTopicBtn, .detailBtn {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-full);
+  background: none; border: none;
+  color: var(--color-text-muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.editTopicBtn:hover { background: var(--color-surface-2); color: var(--color-primary); }
+.detailBtn:hover { background: var(--color-surface-2); }
