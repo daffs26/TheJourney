@@ -29,7 +29,7 @@ function getFutureMonths(count = 6) {
   for (let i = 0; i < count; i++) {
     const d = new Date(date.getFullYear(), date.getMonth() + i, 1)
     const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-    const label = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' })
+    const label = d.toLocaleDateString('id-ID', { month: 'long' })
     list.push({ value, label })
   }
   return list
