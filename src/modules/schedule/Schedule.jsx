@@ -22,13 +22,13 @@ const DEFAULT_FORM = {
   months: [], // Array of YYYY-MM active months
 }
 
-// Generate future months (current month + next 5 months)
-function getFutureMonths(count = 6) {
+// Generate all 12 months for the current year (January to December)
+function getAllMonths() {
   const list = []
-  const date = new Date()
-  for (let i = 0; i < count; i++) {
-    const d = new Date(date.getFullYear(), date.getMonth() + i, 1)
-    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+  const currentYear = new Date().getFullYear()
+  for (let m = 0; m < 12; m++) {
+    const d = new Date(currentYear, m, 1)
+    const value = `${currentYear}-${String(m + 1).padStart(2, '0')}`
     const label = d.toLocaleDateString('id-ID', { month: 'long' })
     list.push({ value, label })
   }
@@ -58,7 +58,7 @@ export default function Schedule() {
     }
   }, [])
 
-  const futureMonths = useMemo(() => getFutureMonths(6), [])
+  const allMonths = useMemo(() => getAllMonths(), [])
 
   // Raw schedule for active day
   const daySchedule = getByDay(DAYS[activeDay])
@@ -157,7 +157,7 @@ export default function Schedule() {
         >
           Semua Bulan
         </button>
-        {futureMonths.map(m => (
+        {allMonths.map(m => (
           <button
             key={m.value}
             className={`${styles.monthBtn} ${selectedMonth === m.value ? styles.monthBtnActive : ''}`}
@@ -221,7 +221,7 @@ export default function Schedule() {
                   </div>
                   {sched.months && sched.months.length > 0 && (
                     <div style={{ fontSize: '9px', color: 'var(--color-mod-schedule)', fontWeight: 'bold', marginTop: '4px' }}>
-                      📅 Aktif: {sched.months.map(m => futureMonths.find(fm => fm.value === m)?.label || m).join(', ')}
+                      📅 Aktif: {sched.months.map(m => allMonths.find(fm => fm.value === m)?.label || m).join(', ')}
                     </div>
                   )}
                   {/* Actions buttons */}
@@ -294,7 +294,7 @@ export default function Schedule() {
                 {/* Checklist for Active Months */}
                 <FormField label="Bulan Aktif Kuliah (Kosongkan jika selalu aktif)">
                   <div className={styles.monthsGrid}>
-                    {futureMonths.map(m => {
+                    {allMonths.map(m => {
                       const checked = form.months.includes(m.value)
                       return (
                         <label
