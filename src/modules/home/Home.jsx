@@ -114,7 +114,7 @@ export default function Home() {
           <button
             id="home-notifications"
             className={styles.notifBtn}
-            onClick={() => navigate('/settings')}
+            onClick={() => navigate('/notifications')}
           >
             <Bell size={20} strokeWidth={1.8} />
           </button>
