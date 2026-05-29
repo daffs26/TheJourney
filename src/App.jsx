@@ -13,21 +13,15 @@ const CourseDetail= lazy(() => import('./modules/courses/CourseDetail'))
 const MeetingPage = lazy(() => import('./modules/courses/MeetingPage'))
 const Schedule    = lazy(() => import('./modules/schedule/Schedule'))
 const Todos       = lazy(() => import('./modules/todos/Todos'))
-const Journal     = lazy(() => import('./modules/journal/Journal'))
 const Finance     = lazy(() => import('./modules/finance/Finance'))
-const Maps        = lazy(() => import('./modules/maps/Maps'))
 const Presentation = lazy(() => import('./modules/presentation/Presentation'))
 const Ipk         = lazy(() => import('./modules/ipk/Ipk'))
 const Attendance  = lazy(() => import('./modules/attendance/Attendance'))
 const Settings    = lazy(() => import('./modules/settings/Settings'))
 const Deadline    = lazy(() => import('./modules/deadline/Deadline'))
 const Pomodoro    = lazy(() => import('./modules/pomodoro/Pomodoro'))
-const Flashcard   = lazy(() => import('./modules/flashcard/Flashcard'))
 const Grades      = lazy(() => import('./modules/grades/Grades'))
-const MoodTracker = lazy(() => import('./modules/mood/MoodTracker'))
-const Templates   = lazy(() => import('./modules/templates/Templates'))
-const Learning    = lazy(() => import('./modules/learning/Learning'))
-const Bibliography= lazy(() => import('./modules/bibliography/Bibliography'))
+const Documents   = lazy(() => import('./modules/documents/Documents'))
 
 function App() {
   const { init, onboarded, toasts } = useAppStore()
@@ -67,21 +61,15 @@ function App() {
             <Route path="/courses/:courseId/meeting/:meetingId" element={<MeetingPage />} />
             <Route path="/schedule"       element={<Schedule />} />
             <Route path="/todos"          element={<Todos />} />
-            <Route path="/journal"        element={<Journal />} />
             <Route path="/finance"        element={<Finance />} />
-            <Route path="/maps"           element={<Maps />} />
             <Route path="/ppt"            element={<Presentation />} />
             <Route path="/ipk"            element={<Ipk />} />
             <Route path="/attendance"     element={<Attendance />} />
             <Route path="/settings"       element={<Settings />} />
             <Route path="/deadline"      element={<Deadline />} />
             <Route path="/pomodoro"      element={<Pomodoro />} />
-            <Route path="/flashcard"     element={<Flashcard />} />
             <Route path="/grades"        element={<Grades />} />
-            <Route path="/mood"          element={<MoodTracker />} />
-            <Route path="/templates"     element={<Templates />} />
-            <Route path="/learning"      element={<Learning />} />
-            <Route path="/bibliography"  element={<Bibliography />} />
+            <Route path="/documents"     element={<Documents />} />
             <Route path="*"               element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>

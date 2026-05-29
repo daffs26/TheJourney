@@ -237,7 +237,7 @@
 /* ---- Module Grid ---- */
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   grid-template-rows: auto;
   gap: var(--space-3);
 }
@@ -263,22 +263,28 @@
 
 /* Size variants */
 .large {
-  grid-column: span 2;
+  grid-column: span 3;
   padding: var(--space-5);
   aspect-ratio: auto;
   min-height: 100px;
 }
 
 .medium {
-  grid-column: span 2;
+  grid-column: span 3;
   padding: var(--space-4);
   min-height: 80px;
 }
 
 .small {
-  grid-column: span 1;
+  grid-column: span 2;
   padding: var(--space-3) var(--space-2);
   min-height: 72px;
+}
+
+/* Symmetrical row-filling for 5 small items */
+.small:nth-last-child(1),
+.small:nth-last-child(2) {
+  grid-column: span 3;
 }
 
 .modIcon {

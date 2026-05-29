@@ -43,7 +43,12 @@ export const useScheduleStore = create((set, get) => ({
   getTodaySchedule: () => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
     const today = days[new Date().getDay()]
-    return get().getByDay(today)
+    const now = new Date()
+    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+    return get().getByDay(today).filter(s => {
+      if (!s.months || s.months.length === 0) return true
+      return s.months.includes(currentMonthStr)
+    })
   },
 
   getNextClass: () => {

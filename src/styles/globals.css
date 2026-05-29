@@ -124,7 +124,7 @@ input, textarea, select { font-family: var(--font-family); }
 .page {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom));
+  padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + var(--space-4));
   overscroll-behavior: contain;
 }
 

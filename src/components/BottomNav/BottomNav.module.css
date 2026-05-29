@@ -5,7 +5,7 @@
   transform: translateX(-50%);
   width: 100%;
   max-width: var(--app-max-width);
-  height: var(--bottom-nav-h);
+  height: calc(var(--bottom-nav-h) + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);

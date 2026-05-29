@@ -2,7 +2,7 @@ import Dexie from 'dexie'
 
 export const db = new Dexie('TheJourneyDB')
 
-db.version(2).stores({
+db.version(3).stores({
   // Mata Kuliah
   courses: '++id, name, code, sks, lecturer, room, semester, color, createdAt',
   
@@ -60,6 +60,9 @@ db.version(2).stores({
 
   // Bibliography
   bibliographies: '++id, courseId, title, authors, year, publisher, journal, volume, issue, pages, doi, url, type, note, createdAt',
+
+  // Dokumen / Upload Dokumen
+  documents: '++id, name, type, size, notes, uploadedAt',
 
   // Pengaturan App
   settings: '&key, value, updatedAt',

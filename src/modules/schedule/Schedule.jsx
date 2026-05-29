@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Calendar, Trash2, ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react'
+import { Plus, Calendar, Trash2, Clock, MapPin, Edit2, X } from 'lucide-react'
 import { useScheduleStore } from '../../store/useScheduleStore'
 import { useCoursesStore } from '../../store/useCoursesStore'
 import { useAppStore } from '../../store/useAppStore'
@@ -19,13 +19,30 @@ const DEFAULT_FORM = {
   endTime: '09:40',
   room: '',
   color: COLORS[0],
+  months: [], // Array of YYYY-MM active months
+}
+
+// Generate future months (current month + next 5 months)
+function getFutureMonths(count = 6) {
+  const list = []
+  const date = new Date()
+  for (let i = 0; i < count; i++) {
+    const d = new Date(date.getFullYear(), date.getMonth() + i, 1)
+    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    const label = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' })
+    list.push({ value, label })
+  }
+  return list
 }
 
 export default function Schedule() {
   const [activeDay, setActiveDay] = useState(TODAY_INDEX)
+  const [selectedMonth, setSelectedMonth] = useState('all') // all | YYYY-MM
   const [showForm, setShowForm] = useState(false)
+  const [isEditing, setIsEditing] = useState(null) // schedule ID if editing
   const [form, setForm] = useState(DEFAULT_FORM)
-  const { schedules, loading, fetchSchedules, addSchedule, deleteSchedule, getByDay } = useScheduleStore()
+
+  const { schedules, loading, fetchSchedules, addSchedule, updateSchedule, deleteSchedule, getByDay } = useScheduleStore()
   const { courses, fetchCourses } = useCoursesStore()
   const { addToast } = useAppStore()
 
@@ -41,7 +58,19 @@ export default function Schedule() {
     }
   }, [])
 
+  const futureMonths = useMemo(() => getFutureMonths(6), [])
+
+  // Raw schedule for active day
   const daySchedule = getByDay(DAYS[activeDay])
+
+  // Filtered schedule for active day & month
+  const filteredDaySchedule = useMemo(() => {
+    return daySchedule.filter(sched => {
+      if (selectedMonth === 'all') return true
+      if (!sched.months || sched.months.length === 0) return true // Active for all months
+      return sched.months.includes(selectedMonth)
+    })
+  }, [daySchedule, selectedMonth])
 
   const handleCourseSelect = (e) => {
     const courseId = parseInt(e.target.value)
@@ -55,25 +84,59 @@ export default function Schedule() {
     }))
   }
 
-  const handleAdd = async () => {
+  const openAddModal = () => {
+    setForm({ ...DEFAULT_FORM, day: DAYS[activeDay] })
+    setIsEditing(null)
+    setShowForm(true)
+  }
+
+  const openEditModal = (sched) => {
+    setForm({
+      courseId: sched.courseId || '',
+      courseName: sched.course?.name || sched.courseName || '',
+      day: sched.day || DAYS[activeDay],
+      startTime: sched.startTime || '08:00',
+      endTime: sched.endTime || '09:40',
+      room: sched.room || '',
+      color: sched.color || COLORS[0],
+      months: sched.months || [],
+    })
+    setIsEditing(sched.id)
+    setShowForm(true)
+  }
+
+  const handleSave = async () => {
     if (!form.startTime || !form.endTime) {
-      addToast('Jam mulai dan selesai wajib diisi', 'warning'); return
+      addToast('Jam mulai dan selesai wajib diisi', 'warning')
+      return
     }
     if (!form.courseName.trim()) {
-      addToast('Nama mata kuliah wajib diisi', 'warning'); return
+      addToast('Nama mata kuliah wajib diisi', 'warning')
+      return
     }
-    await addSchedule({
+
+    const payload = {
       ...form,
-      day: DAYS[activeDay],
-    })
-    addToast('Jadwal ditambahkan!', 'success')
-    setForm({ ...DEFAULT_FORM, day: DAYS[activeDay] })
+      day: DAYS[activeDay]
+    }
+
+    if (isEditing) {
+      await updateSchedule(isEditing, payload)
+      addToast('Jadwal diperbarui!', 'success')
+    } else {
+      await addSchedule(payload)
+      addToast('Jadwal ditambahkan!', 'success')
+    }
+
     setShowForm(false)
+    setIsEditing(null)
   }
 
   const handleDelete = async (id) => {
-    await deleteSchedule(id)
-    addToast('Jadwal dihapus', 'info')
+    if (window.confirm('Hapus jadwal kuliah ini?')) {
+      await deleteSchedule(id)
+      addToast('Jadwal dihapus', 'info')
+    }
   }
 
   return (
@@ -81,9 +144,28 @@ export default function Schedule() {
       {/* Header */}
       <div className={styles.header}>
         <h1 className={styles.title}>Jadwal Kuliah</h1>
-        <button id="schedule-add-btn" className={styles.addBtn} onClick={() => setShowForm(true)}>
+        <button id="schedule-add-btn" className={styles.addBtn} onClick={openAddModal} aria-label="Tambah Jadwal">
           <Plus size={18} strokeWidth={2.5} />
         </button>
+      </div>
+
+      {/* Month Bar Filter */}
+      <div className={styles.monthBar}>
+        <button
+          className={`${styles.monthBtn} ${selectedMonth === 'all' ? styles.monthBtnActive : ''}`}
+          onClick={() => setSelectedMonth('all')}
+        >
+          Semua Bulan
+        </button>
+        {futureMonths.map(m => (
+          <button
+            key={m.value}
+            className={`${styles.monthBtn} ${selectedMonth === m.value ? styles.monthBtnActive : ''}`}
+            onClick={() => setSelectedMonth(m.value)}
+          >
+            {m.label}
+          </button>
+        ))}
       </div>
 
       {/* Day selector */}
@@ -105,20 +187,20 @@ export default function Schedule() {
         <div className={styles.dayTitle}>
           {DAYS[activeDay]}
           {activeDay === TODAY_INDEX && <span className={styles.todayBadge}>Hari ini</span>}
-          <span className={styles.classCount}>{daySchedule.length} kelas</span>
+          <span className={styles.classCount}>{filteredDaySchedule.length} kelas</span>
         </div>
 
-        {daySchedule.length === 0 ? (
+        {filteredDaySchedule.length === 0 ? (
           <div className={styles.emptyDay}>
             <Calendar size={40} strokeWidth={1} style={{ opacity: 0.3 }} />
-            <p>Tidak ada kelas {DAYS[activeDay]}</p>
-            <button className={styles.addEmptyBtn} onClick={() => setShowForm(true)}>
+            <p>Tidak ada kelas di hari {DAYS[activeDay]}</p>
+            <button className={styles.addEmptyBtn} onClick={openAddModal}>
               <Plus size={14} /> Tambah Jadwal
             </button>
           </div>
         ) : (
           <div className={styles.timelineList}>
-            {daySchedule.map((sched, idx) => (
+            {filteredDaySchedule.map((sched, idx) => (
               <motion.div
                 key={sched.id}
                 className={styles.timelineItem}
@@ -137,9 +219,20 @@ export default function Schedule() {
                     <span><Clock size={11} /> {sched.startTime}–{sched.endTime}</span>
                     {sched.room && <span><MapPin size={11} /> {sched.room}</span>}
                   </div>
-                  <button className={styles.deleteSchedBtn} onClick={() => handleDelete(sched.id)}>
-                    <Trash2 size={13} />
-                  </button>
+                  {sched.months && sched.months.length > 0 && (
+                    <div style={{ fontSize: '9px', color: 'var(--color-mod-schedule)', fontWeight: 'bold', marginTop: '4px' }}>
+                      📅 Aktif: {sched.months.map(m => futureMonths.find(fm => fm.value === m)?.label || m).join(', ')}
+                    </div>
+                  )}
+                  {/* Actions buttons */}
+                  <div className={styles.cardActions}>
+                    <button className={`${styles.actionBtn} ${styles.editBtn}`} onClick={() => openEditModal(sched)} title="Ubah Jadwal">
+                      <Edit2 size={13} />
+                    </button>
+                    <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={() => handleDelete(sched.id)} title="Hapus Jadwal">
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -147,7 +240,7 @@ export default function Schedule() {
         )}
       </div>
 
-      {/* Add form modal */}
+      {/* Add/Edit form modal */}
       <AnimatePresence>
         {showForm && (
           <>
@@ -161,7 +254,9 @@ export default function Schedule() {
               initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
             >
-              <h3 className={styles.modalTitle}>Tambah Jadwal — {DAYS[activeDay]}</h3>
+              <h3 className={styles.modalTitle}>
+                {isEditing ? 'Ubah Jadwal' : 'Tambah Jadwal'} — {DAYS[activeDay]}
+              </h3>
 
               <div className={styles.form}>
                 <FormField label="Pilih dari Mata Kuliah (opsional)">
@@ -195,10 +290,39 @@ export default function Schedule() {
                   <input id="sched-room" className={styles.input} placeholder="Contoh: GKT Lt.2 R.201"
                     value={form.room} onChange={e => setForm(f => ({ ...f, room: e.target.value }))} />
                 </FormField>
+
+                {/* Checklist for Active Months */}
+                <FormField label="Bulan Aktif Kuliah (Kosongkan jika selalu aktif)">
+                  <div className={styles.monthsGrid}>
+                    {futureMonths.map(m => {
+                      const checked = form.months.includes(m.value)
+                      return (
+                        <label
+                          key={m.value}
+                          className={`${styles.monthCheckboxLabel} ${checked ? styles.monthCheckboxLabelChecked : ''}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            style={{ display: 'none' }}
+                            onChange={() => {
+                              const newMonths = checked
+                                ? form.months.filter(val => val !== m.value)
+                                : [...form.months, m.value]
+                              setForm(f => ({ ...f, months: newMonths }))
+                            }}
+                          />
+                          <span>{m.label}</span>
+                        </label>
+                      )
+                    })}
+                  </div>
+                </FormField>
+
                 <FormField label="Warna">
                   <div className={styles.colorRow}>
                     {COLORS.map(c => (
-                      <button key={c} className={`${styles.colorDot} ${form.color === c ? styles.colorActive : ''}`}
+                      <button key={c} type="button" className={`${styles.colorDot} ${form.color === c ? styles.colorActive : ''}`}
                         style={{ background: c }} onClick={() => setForm(f => ({ ...f, color: c }))} />
                     ))}
                   </div>
@@ -207,7 +331,7 @@ export default function Schedule() {
 
               <div className={styles.modalActions}>
                 <button className={styles.cancelBtn} onClick={() => setShowForm(false)}>Batal</button>
-                <button id="sched-save" className={styles.saveBtn} onClick={handleAdd}>Simpan</button>
+                <button id="sched-save" className={styles.saveBtn} onClick={handleSave}>Simpan</button>
               </div>
             </motion.div>
           </>

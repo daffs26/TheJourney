@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   BookOpen, Calendar, CheckSquare,
-  Search, Wallet, Map, Presentation, GraduationCap,
-  Timer, Brain, ScanLine, Calculator, ClipboardList,
-  Clock, TrendingUp, Smile, FileText, Bell,
+  Wallet, Presentation, Timer, Calculator, ClipboardList,
+  Clock, TrendingUp, FileText, Bell,
   ChevronRight, Sun, Moon, Sunset
 } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
@@ -19,20 +18,14 @@ const MODULES = [
   { id: 'schedule', label: 'Jadwal',          icon: Calendar,      path: '/schedule', color: 'var(--color-mod-schedule)', size: 'large' },
   // Row 2 — Secondary
   { id: 'todos',    label: 'To-Do',           icon: CheckSquare,   path: '/todos',    color: 'var(--color-mod-todo)',     size: 'medium' },
-  { id: 'journal',  label: 'Cari Jurnal',     icon: Search,        path: '/journal',  color: 'var(--color-mod-journal)',  size: 'medium' },
+  { id: 'documents',label: 'Dokumen',         icon: FileText,      path: '/documents',color: 'var(--color-info)',         size: 'medium' },
   // Row 3
   { id: 'finance',  label: 'Keuangan',        icon: Wallet,        path: '/finance',  color: 'var(--color-mod-finance)',  size: 'medium' },
-  { id: 'maps',     label: 'Maps',            icon: Map,           path: '/maps',     color: 'var(--color-mod-maps)',     size: 'medium' },
   { id: 'ppt',      label: 'Presentasi',      icon: Presentation,  path: '/ppt',      color: 'var(--color-mod-ppt)',      size: 'medium' },
   // Row 4 — Bonus (small)
   { id: 'pomodoro', label: 'Pomodoro',        icon: Timer,         path: '/pomodoro',    color: 'var(--color-mod-pomodoro)', size: 'small' },
-  { id: 'flashcard',label: 'Flashcard',       icon: Brain,         path: '/flashcard',   color: 'var(--color-mod-flashcard)',size: 'small' },
   { id: 'deadline', label: 'Deadline Wall',   icon: Clock,         path: '/deadline',    color: 'var(--color-mod-ppt)',      size: 'small' },
   { id: 'grades',   label: 'Nilai',           icon: TrendingUp,    path: '/grades',      color: 'var(--color-mod-courses)',  size: 'small' },
-  { id: 'mood',     label: 'Mood',            icon: Smile,         path: '/mood',        color: 'var(--color-mod-mood)',     size: 'small' },
-  { id: 'template', label: 'Template',        icon: FileText,      path: '/templates',   color: 'var(--color-mod-schedule)', size: 'small' },
-  { id: 'learning', label: 'Belajar Mandiri', icon: GraduationCap, path: '/learning',    color: 'var(--color-mod-learning)', size: 'small' },
-  { id: 'bib',      label: 'Bibliography',    icon: ScanLine,      path: '/bibliography',color: 'var(--color-mod-learning)', size: 'small' },
   { id: 'ipk',      label: 'Kalkulator IPK',  icon: Calculator,    path: '/ipk',         color: 'var(--color-mod-ipk)',      size: 'small' },
   { id: 'attend',   label: 'Absensi',         icon: ClipboardList, path: '/attendance',  color: 'var(--color-mod-todo)',     size: 'small' },
 ]

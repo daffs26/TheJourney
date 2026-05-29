@@ -179,3 +179,64 @@
   font-family: var(--font-family); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
   cursor: pointer; box-shadow: var(--shadow-primary);
 }
+
+/* Month Bar */
+.monthBar {
+  display: flex; overflow-x: auto; padding: var(--space-2) var(--space-4);
+  gap: var(--space-2); background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-border);
+  scrollbar-width: none;
+}
+.monthBar::-webkit-scrollbar { display: none; }
+
+.monthBtn {
+  padding: 5px 12px; border-radius: var(--radius-full);
+  border: 1px solid var(--color-border); background: var(--color-surface);
+  color: var(--color-text-sub); font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold); cursor: pointer;
+  transition: all var(--transition-fast); white-space: nowrap;
+}
+
+.monthBtnActive {
+  background: var(--color-mod-schedule); color: white;
+  border-color: var(--color-mod-schedule);
+}
+
+/* Action buttons inside card */
+.cardActions {
+  position: absolute; top: var(--space-2); right: var(--space-2);
+  display: flex; align-items: center; gap: 2px;
+}
+
+.actionBtn {
+  width: 28px; height: 28px; border-radius: var(--radius-full);
+  background: none; border: none; color: var(--color-text-muted);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.editBtn:hover { background: var(--color-primary-pale); color: var(--color-primary); }
+.deleteBtn:hover { background: var(--color-danger-pale); color: var(--color-danger); }
+
+/* Checklist grid for months in modal */
+.monthsGrid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2);
+  margin-top: 2px;
+}
+
+.monthCheckboxLabel {
+  display: flex; align-items: center; gap: var(--space-2);
+  font-size: var(--font-size-xs); color: var(--color-text-sub);
+  cursor: pointer; background: var(--color-surface-2);
+  padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+  border: 1px solid var(--color-border); transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.monthCheckboxLabel:hover { border-color: var(--color-mod-schedule); }
+
+.monthCheckboxLabelChecked {
+  background: rgba(139,92,246,0.08); border-color: var(--color-mod-schedule);
+  color: var(--color-mod-schedule); font-weight: var(--font-weight-semibold);
+}
+
