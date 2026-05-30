@@ -45,7 +45,14 @@ export const useAppStore = create((set, get) => ({
   // Toast system
   addToast: (message, type = 'info', duration = 3000) => {
     const id = Date.now()
-    set(state => ({ toasts: [...state.toasts, { id, message, type }] }))
+    set(state => {
+      const newToasts = [...state.toasts, { id, message, type }]
+      // Batasi pop-up notifikasi maksimal hanya 2 yang tampil di layar
+      if (newToasts.length > 2) {
+        return { toasts: newToasts.slice(-2) }
+      }
+      return { toasts: newToasts }
+    })
     setTimeout(() => get().removeToast(id), duration)
   },
 
