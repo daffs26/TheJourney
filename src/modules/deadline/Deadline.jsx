@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Clock, Plus, CheckSquare, AlertTriangle, CheckCircle2, Filter } from 'lucide-react'
+import { Clock, Plus, CheckSquare, AlertTriangle, CheckCircle2, Filter, ArrowLeft } from 'lucide-react'
 import { useTodosStore } from '../../store/useTodosStore'
 import { useNavigate } from 'react-router-dom'
 import styles from './Deadline.module.css'
@@ -107,8 +107,34 @@ export default function Deadline() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header}>
-        <h1 className={styles.title}>⏰ Deadline Wall</h1>
-        <p className={styles.subtitle}>Pantau semua tenggat waktu tugasmu</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: 'none',
+              width: 36,
+              height: 36,
+              borderRadius: 'var(--radius-full)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0,
+              transition: 'background 0.2s ease',
+            }}
+            aria-label="Kembali"
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'}
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h1 className={styles.title} style={{ margin: 0 }}>⏰ Deadline Wall</h1>
+            <p className={styles.subtitle} style={{ margin: 0 }}>Pantau semua tenggat waktu tugasmu</p>
+          </div>
+        </div>
       </div>
 
       <div className={styles.content}>

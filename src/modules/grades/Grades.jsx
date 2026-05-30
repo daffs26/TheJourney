@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, TrendingUp, Edit3, Trash2, ChevronDown, ChevronUp, Target } from 'lucide-react'
+import { Plus, TrendingUp, Edit3, Trash2, ChevronDown, ChevronUp, Target, ArrowLeft } from 'lucide-react'
 import { db } from '../../db/database'
 import { useAppStore } from '../../store/useAppStore'
 
@@ -47,6 +48,7 @@ const FORM_DEFAULT = {
 }
 
 export default function Grades() {
+  const navigate = useNavigate()
   const { addToast } = useAppStore()
   const [entries, setEntries] = useState([])
   const [courses, setCourses] = useState([])
@@ -115,10 +117,34 @@ export default function Grades() {
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100vh - var(--bottom-nav-h))', background: 'var(--color-bg)', overflow: 'hidden' }}>
       {/* Header */}
       <div style={{ padding: 'calc(var(--space-6) + env(safe-area-inset-top,0px)) var(--space-4) var(--space-5)', background: 'linear-gradient(160deg, #0c2040 0%, #1e3a5f 100%)', color: 'white', borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-extrabold)' }}>📊 Nilai & Estimasi</h1>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>Pantau performa akademikmu</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: 'none',
+                width: 36,
+                height: 36,
+                borderRadius: 'var(--radius-full)',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0,
+                transition: 'background 0.2s ease',
+              }}
+              aria-label="Kembali"
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'}
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div>
+              <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-extrabold)', margin: 0 }}>📊 Nilai & Estimasi</h1>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'rgba(255,255,255,0.7)', margin: 0, marginTop: 2 }}>Pantau performa akademikmu</p>
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={() => setShowWeights(v => !v)}

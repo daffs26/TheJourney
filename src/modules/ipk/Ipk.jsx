@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   Calculator,
@@ -9,7 +10,8 @@ import {
   BookOpen,
   Info,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  ArrowLeft
 } from 'lucide-react'
 import { useCoursesStore } from '../../store/useCoursesStore'
 import { useAppStore } from '../../store/useAppStore'
@@ -30,6 +32,7 @@ const GRADE_VALUES = {
 }
 
 export default function Ipk() {
+  const navigate = useNavigate()
   const { courses, fetchCourses } = useCoursesStore()
   const { addToast } = useAppStore()
 
@@ -178,8 +181,34 @@ export default function Ipk() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header}>
-        <h1 className={styles.title}>Kalkulator IPK</h1>
-        <p className={styles.subtitle}>Pantau pencapaian akademik dan rencanakan target kelulusan</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: 'none',
+              width: 36,
+              height: 36,
+              borderRadius: 'var(--radius-full)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0,
+              transition: 'background 0.2s ease',
+            }}
+            aria-label="Kembali"
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'}
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h1 className={styles.title} style={{ margin: 0 }}>Kalkulator IPK</h1>
+            <p className={styles.subtitle} style={{ margin: 0 }}>Pantau pencapaian akademik dan rencanakan target kelulusan</p>
+          </div>
+        </div>
       </div>
 
       {/* Tabs */}

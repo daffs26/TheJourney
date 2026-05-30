@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Presentation as PptIcon,
@@ -8,7 +9,8 @@ import {
   Trash2,
   AlertCircle,
   FileText,
-  Loader2
+  Loader2,
+  ArrowLeft
 } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 import styles from './Presentation.module.css'
@@ -22,6 +24,7 @@ const THEMES = [
 ]
 
 export default function Presentation() {
+  const navigate = useNavigate()
   const { addToast } = useAppStore()
 
   // Setup state
@@ -307,8 +310,34 @@ export default function Presentation() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header}>
-        <h1 className={styles.title}>PPT Generator</h1>
-        <p className={styles.subtitle}>Buat outline presentasi kuliah instan & terstruktur</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: 'none',
+              width: 36,
+              height: 36,
+              borderRadius: 'var(--radius-full)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0,
+              transition: 'background 0.2s ease',
+            }}
+            aria-label="Kembali"
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'}
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h1 className={styles.title} style={{ margin: 0 }}>PPT Generator</h1>
+            <p className={styles.subtitle} style={{ margin: 0 }}>Buat outline presentasi kuliah instan & terstruktur</p>
+          </div>
+        </div>
       </div>
 
       <div className={styles.content}>

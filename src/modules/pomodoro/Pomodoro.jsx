@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Play, Pause, RotateCcw, Maximize2, Minimize2,
-  Coffee, Brain, CheckCircle2, Settings as SettingsIcon, X
+  Coffee, Brain, CheckCircle2, Settings as SettingsIcon, X, ArrowLeft
 } from 'lucide-react'
 import { db } from '../../db/database'
 import { useAppStore } from '../../store/useAppStore'
@@ -24,6 +25,7 @@ function fmt(seconds) {
 }
 
 export default function Pomodoro() {
+  const navigate = useNavigate()
   const { addToast } = useAppStore()
 
   // Settings
@@ -230,10 +232,34 @@ export default function Pomodoro() {
 
       {/* Header */}
       <div className={styles.header}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <h1 className={styles.title}>🍅 Pomodoro</h1>
-            <p className={styles.subtitle}>Teknik fokus 25 menit untuk produktivitas maksimal</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: 'none',
+                width: 36,
+                height: 36,
+                borderRadius: 'var(--radius-full)',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0,
+                transition: 'background 0.2s ease',
+              }}
+              aria-label="Kembali"
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'}
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div>
+              <h1 className={styles.title} style={{ margin: 0 }}>🍅 Pomodoro</h1>
+              <p className={styles.subtitle} style={{ margin: 0 }}>Teknik fokus 25 menit untuk produktivitas maksimal</p>
+            </div>
           </div>
           <button onClick={() => { setTempSettings(settings); setShowSettings(true) }}
             style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 'var(--radius-full)', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer' }}>
