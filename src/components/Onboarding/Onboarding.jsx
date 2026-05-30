@@ -91,6 +91,11 @@ export default function Onboarding() {
             >
               {initialLetter}
             </div>
+            
+            <div className={styles.namePreview}>
+              {name.trim() || 'Nama Kamu'}
+            </div>
+
             <div className={styles.avatarSelector}>
               {Object.keys(avatarGradients).map((color) => (
                 <button

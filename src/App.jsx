@@ -222,7 +222,15 @@ function App() {
   const [initializing, setInitializing] = useState(true)
 
   useEffect(() => {
-    init().finally(() => setInitializing(false))
+    const startTime = Date.now()
+    init().finally(() => {
+      const elapsed = Date.now() - startTime
+      const minDelay = 1800
+      const remaining = Math.max(0, minDelay - elapsed)
+      setTimeout(() => {
+        setInitializing(false)
+      }, remaining)
+    })
   }, [init])
 
   // Show loading screen while reading from IndexedDB

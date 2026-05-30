@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion'
 import { GraduationCap } from 'lucide-react'
+import { useAppStore } from '../../store/useAppStore'
 import styles from './LoadingScreen.module.css'
 
 export default function LoadingScreen() {
+  const { profile } = useAppStore()
+  const name = profile?.name?.trim()
+
   return (
     <div className={styles.screen}>
       <div className={styles.glow} />
@@ -27,12 +31,12 @@ export default function LoadingScreen() {
         </motion.h1>
         
         <motion.p 
-          className={styles.subtitle}
+          className={name ? styles.userName : styles.subtitle}
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.45, duration: 0.5 }}
         >
-          Super App Mahasiswa SI
+          {name || 'Super App Mahasiswa SI'}
         </motion.p>
       </div>
 

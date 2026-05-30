@@ -282,3 +282,12 @@
   cursor: pointer;
   font-family: var(--font-family);
 }
+
+.namePreview {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-top: var(--space-1);
+  text-align: center;
+  letter-spacing: -0.01em;
+}

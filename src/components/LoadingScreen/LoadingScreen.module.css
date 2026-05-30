@@ -82,3 +82,11 @@
   background: var(--color-primary);
   opacity: 0.8;
 }
+
+.userName {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-sub);
+  letter-spacing: 0.02em;
+  margin-top: var(--space-1);
+}
