@@ -218,7 +218,7 @@ function AppRoutes() {
 }
 
 function App() {
-  const { init, onboarded, toasts } = useAppStore()
+  const { init, onboarded, toasts, theme, applyTheme } = useAppStore()
   const [initializing, setInitializing] = useState(true)
 
   useEffect(() => {
@@ -232,6 +232,21 @@ function App() {
       }, remaining)
     })
   }, [init])
+
+  // Listen to system theme preference changes if theme is set to 'system'
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = () => {
+      if (theme === 'system') {
+        applyTheme('system')
+      }
+    }
+    
+    mediaQuery.addEventListener('change', handleChange)
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange)
+    }
+  }, [theme, applyTheme])
 
   // Show loading screen while reading from IndexedDB
   if (initializing) {

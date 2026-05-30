@@ -53,7 +53,12 @@ const AVATAR_GRADIENTS = {
 
 export default function Home() {
   const navigate = useNavigate()
-  const { profile } = useAppStore()
+  const { profile, theme, setTheme } = useAppStore()
+
+  const toggleTheme = () => {
+    const isDark = document.documentElement.classList.contains('dark')
+    setTheme(isDark ? 'light' : 'dark')
+  }
   const { getTodaySchedule, fetchSchedules } = useScheduleStore()
   const { getStats, fetchTodos } = useTodosStore()
   const [todaySchedule, setTodaySchedule] = useState([])
@@ -105,13 +110,27 @@ export default function Home() {
               <p className={styles.date}>{dateStr}</p>
             </div>
           </div>
-          <button
-            id="home-notifications"
-            className={styles.notifBtn}
-            onClick={() => navigate('/notifications')}
-          >
-            <Bell size={20} strokeWidth={1.8} />
-          </button>
+          <div className={styles.headerActions}>
+            <button
+              id="home-theme-toggle"
+              className={styles.themeBtn}
+              onClick={toggleTheme}
+              title="Ganti Tema"
+            >
+              {theme === 'dark' || (theme === 'system' && document.documentElement.classList.contains('dark')) ? (
+                <Sun size={20} strokeWidth={1.8} />
+              ) : (
+                <Moon size={20} strokeWidth={1.8} />
+              )}
+            </button>
+            <button
+              id="home-notifications"
+              className={styles.notifBtn}
+              onClick={() => navigate('/notifications')}
+            >
+              <Bell size={20} strokeWidth={1.8} />
+            </button>
+          </div>
         </div>
 
         {/* Quick stats */}

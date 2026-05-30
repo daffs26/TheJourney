@@ -5,6 +5,7 @@ export const useAppStore = create((set, get) => ({
   // User Profile
   profile: { name: '', prodi: 'Sistem Informasi', semester: 1 },
   onboarded: false,
+  theme: 'system', // 'light' | 'dark' | 'system'
 
   // UI State
   activeTab: 'home',
@@ -18,11 +19,15 @@ export const useAppStore = create((set, get) => ({
     try {
       const onboarded = await db.settings.get('onboarded')
       const profileSetting = await db.settings.get('userProfile')
+      const themeSetting = await db.settings.get('theme')
+      const theme = themeSetting?.value || 'system'
 
       set({
         onboarded: onboarded?.value === 'true',
         profile: profileSetting ? JSON.parse(profileSetting.value) : { name: '', prodi: 'Sistem Informasi', semester: 1 },
+        theme,
       })
+      get().applyTheme(theme)
     } catch (e) {
       console.error('App init error:', e)
     }
@@ -38,7 +43,22 @@ export const useAppStore = create((set, get) => ({
     set({ onboarded: true })
   },
 
+  applyTheme: (theme) => {
+    const root = document.documentElement
+    root.classList.remove('light', 'dark')
+    if (theme === 'system') {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      root.classList.add(isDark ? 'dark' : 'light')
+    } else {
+      root.classList.add(theme)
+    }
+  },
 
+  setTheme: async (theme) => {
+    await db.settings.put({ key: 'theme', value: theme, updatedAt: new Date() })
+    set({ theme })
+    get().applyTheme(theme)
+  },
 
   setActiveTab: (tab) => set({ activeTab: tab }),
 

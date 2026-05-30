@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Settings2, User, Info, ArrowLeft, Save } from 'lucide-react'
+import { Settings2, User, Info, ArrowLeft, Save, Palette } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 import styles from './Settings.module.css'
 
@@ -15,7 +15,7 @@ const AVATAR_GRADIENTS = {
 
 export default function Settings() {
   const navigate = useNavigate()
-  const { profile, setProfile, addToast } = useAppStore()
+  const { profile, setProfile, addToast, theme, setTheme } = useAppStore()
   const [name, setName] = useState(profile.name)
   const [prodi, setProdi] = useState(profile.prodi || 'Sistem Informasi')
   const [semester, setSemester] = useState(String(profile.semester))
@@ -102,6 +102,35 @@ export default function Settings() {
               ))}
             </select>
           </Field>
+        </Section>
+
+        <Section title="Tampilan" icon={Palette}>
+          <div className={styles.themeSelector}>
+            <button
+              id="settings-theme-light"
+              type="button"
+              className={`${styles.themeOption} ${theme === 'light' ? styles.themeOptionActive : ''}`}
+              onClick={() => setTheme('light')}
+            >
+              ☀️ Terang
+            </button>
+            <button
+              id="settings-theme-dark"
+              type="button"
+              className={`${styles.themeOption} ${theme === 'dark' ? styles.themeOptionActive : ''}`}
+              onClick={() => setTheme('dark')}
+            >
+              🌙 Gelap
+            </button>
+            <button
+              id="settings-theme-system"
+              type="button"
+              className={`${styles.themeOption} ${theme === 'system' ? styles.themeOptionActive : ''}`}
+              onClick={() => setTheme('system')}
+            >
+              💻 Sistem
+            </button>
+          </div>
         </Section>
 
 
