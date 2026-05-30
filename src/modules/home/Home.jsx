@@ -106,7 +106,7 @@ export default function Home() {
                 <GreetIcon size={16} className={styles.greetIcon} />
                 <span>{greeting.text},</span>
               </div>
-              <h1 className={styles.name}>{firstName}! 👋</h1>
+              <h1 className={styles.name}>{firstName}! </h1>
               <p className={styles.date}>{dateStr}</p>
             </div>
           </div>
