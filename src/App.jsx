@@ -1,7 +1,6 @@
 import { useEffect, useState, lazy, Suspense, useRef } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate, useNavigationType } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { registerSW } from 'virtual:pwa-register'
 import { useAppStore } from './store/useAppStore'
 import BottomNav from './components/BottomNav/BottomNav'
 import Toast from './components/Toast/Toast'
@@ -219,7 +218,7 @@ function AppRoutes() {
 }
 
 function App() {
-  const { init, onboarded, toasts, theme, applyTheme, addToast } = useAppStore()
+  const { init, onboarded, toasts, theme, applyTheme } = useAppStore()
   const [initializing, setInitializing] = useState(true)
 
   useEffect(() => {
@@ -248,21 +247,6 @@ function App() {
       mediaQuery.removeEventListener('change', handleChange)
     }
   }, [theme, applyTheme])
-
-  // Handle PWA Updates automatically
-  useEffect(() => {
-    const updateSW = registerSW({
-      onNeedRefresh() {
-        addToast('Pembaruan aplikasi tersedia! Memuat ulang...', 'info', 4000)
-        setTimeout(() => {
-          updateSW(true)
-        }, 1500)
-      },
-      onOfflineReady() {
-        console.log('Aplikasi siap untuk penggunaan offline!')
-      }
-    })
-  }, [addToast])
 
   // Show loading screen while reading from IndexedDB
   if (initializing) {
