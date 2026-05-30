@@ -17,15 +17,25 @@ export default function Settings() {
   const navigate = useNavigate()
   const { profile, setProfile, addToast } = useAppStore()
   const [name, setName] = useState(profile.name)
+  const [prodi, setProdi] = useState(profile.prodi || 'Sistem Informasi')
   const [semester, setSemester] = useState(String(profile.semester))
   const [avatarColor, setAvatarColor] = useState(profile.avatarColor || 'blue')
   const [saving, setSaving] = useState(false)
 
   const handleSave = async () => {
+    if (!name.trim()) {
+      addToast('Nama tidak boleh kosong!', 'warning')
+      return
+    }
+    if (!prodi.trim()) {
+      addToast('Program studi tidak boleh kosong!', 'warning')
+      return
+    }
     setSaving(true)
     await setProfile({ 
       ...profile, 
       name: name.trim(), 
+      prodi: prodi.trim(),
       semester: parseInt(semester),
       avatarColor 
     })
@@ -77,7 +87,13 @@ export default function Settings() {
             />
           </Field>
           <Field label="Program Studi">
-            <input className={styles.input} value="Sistem Informasi" disabled />
+            <input
+              id="settings-prodi"
+              className={styles.input}
+              value={prodi}
+              onChange={e => setProdi(e.target.value)}
+              placeholder="Program studi kamu"
+            />
           </Field>
           <Field label="Semester">
             <select id="settings-semester" className={styles.input} value={semester} onChange={e => setSemester(e.target.value)}>

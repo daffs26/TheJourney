@@ -28,6 +28,7 @@ const steps = [
 export default function Onboarding() {
   const [step, setStep] = useState(0)
   const [name, setName] = useState('')
+  const [prodi, setProdi] = useState('Sistem Informasi')
   const [semester, setSemester] = useState('1')
   const [avatarColor, setAvatarColor] = useState('blue')
   const [showSetup, setShowSetup] = useState(false)
@@ -48,9 +49,13 @@ export default function Onboarding() {
       addToast('Masukkan namamu dulu ya!', 'warning')
       return
     }
+    if (!prodi.trim()) {
+      addToast('Masukkan program studimu dulu ya!', 'warning')
+      return
+    }
     await setProfile({ 
       name: name.trim(), 
-      prodi: 'Sistem Informasi', 
+      prodi: prodi.trim(), 
       semester: parseInt(semester), 
       avatarColor 
     })
@@ -125,12 +130,14 @@ export default function Onboarding() {
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Program Studi</label>
+              <label className={styles.label}>Program Studi *</label>
               <input
+                id="onboarding-prodi"
                 className={styles.input}
                 type="text"
-                value="Sistem Informasi"
-                disabled
+                placeholder="Contoh: Sistem Informasi"
+                value={prodi}
+                onChange={e => setProdi(e.target.value)}
               />
             </div>
 
