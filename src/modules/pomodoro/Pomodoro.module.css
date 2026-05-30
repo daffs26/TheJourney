@@ -121,7 +121,17 @@
 .timerCenter {
   position: absolute;
   text-align: center;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.timerCenter:hover {
+  transform: scale(1.04);
+}
+
+.timerCenter:active {
+  transform: scale(0.96);
 }
 
 .timerTime {

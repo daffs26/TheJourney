@@ -9,12 +9,6 @@ import { db } from '../../db/database'
 import { useAppStore } from '../../store/useAppStore'
 import styles from './Pomodoro.module.css'
 
-const MODES = [
-  { id: 'focus',  label: '🍅 Fokus',        defaultMin: 25, color: '#6366f1' },
-  { id: 'short',  label: '☕ Istirahat',     defaultMin: 5,  color: '#10b981' },
-  { id: 'long',   label: '🌙 Istirahat Panjang', defaultMin: 15, color: '#3b82f6' },
-]
-
 const RADIUS = 90
 const CIRC = 2 * Math.PI * RADIUS
 
@@ -34,6 +28,12 @@ export default function Pomodoro() {
   })
   const [showSettings, setShowSettings] = useState(false)
   const [tempSettings, setTempSettings] = useState(settings)
+
+  const MODES = [
+    { id: 'focus',  label: `🍅 Fokus (${settings.focusMin}m)`,        color: '#6366f1' },
+    { id: 'short',  label: `☕ Istirahat (${settings.shortMin}m)`,     color: '#10b981' },
+    { id: 'long',   label: `🌙 Istirahat Panjang (${settings.longMin}m)`, color: '#3b82f6' },
+  ]
 
   // Timer state
   const [mode, setMode] = useState('focus')
@@ -171,7 +171,11 @@ export default function Pomodoro() {
             strokeDashoffset="0"
           />
         </svg>
-        <div className={styles.timerCenter}>
+        <div 
+          className={styles.timerCenter}
+          onClick={() => { setTempSettings(settings); setShowSettings(true) }}
+          title="Klik untuk atur waktu"
+        >
           <div className={`${styles.timerTime} ${dark ? styles.timerTimeDark : ''}`}>{fmt(seconds)}</div>
           <div className={`${styles.timerLabel} ${dark ? styles.timerLabelDark : ''}`}>{currentMode.label}</div>
         </div>
@@ -186,7 +190,7 @@ export default function Pomodoro() {
 
       {/* Controls */}
       <div className={styles.controls}>
-        <button className={styles.ctrlBtn} onClick={handleReset} style={dark ? { borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: 'white' } : {}}>
+        <button className={styles.ctrlBtn} onClick={handleReset} style={dark ? { borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: 'white' } : {}} title="Reset">
           <RotateCcw size={20} />
         </button>
         <button className={styles.playBtn} onClick={handlePlay} style={{ background: `linear-gradient(135deg, ${currentMode.color}, ${currentMode.color}aa)` }}>
@@ -194,8 +198,17 @@ export default function Pomodoro() {
         </button>
         <button
           className={styles.ctrlBtn}
+          onClick={() => { setTempSettings(settings); setShowSettings(true) }}
+          style={dark ? { borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: 'white' } : {}}
+          title="Atur Waktu"
+        >
+          <SettingsIcon size={20} />
+        </button>
+        <button
+          className={styles.ctrlBtn}
           onClick={() => setFocusMode(v => !v)}
           style={dark ? { borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: 'white' } : {}}
+          title={focusMode ? "Keluar Mode Fokus" : "Mode Fokus"}
         >
           {focusMode ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
         </button>
