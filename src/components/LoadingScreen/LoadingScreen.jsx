@@ -36,7 +36,7 @@ export default function LoadingScreen() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.45, duration: 0.5 }}
         >
-          {name || 'Super App Mahasiswa SI'}
+          {name || 'by @daffs_26'}
         </motion.p>
       </div>
 
