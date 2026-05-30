@@ -30,9 +30,9 @@ export default function Pomodoro() {
   const [tempSettings, setTempSettings] = useState(settings)
 
   const MODES = [
-    { id: 'focus',  label: `🍅 Fokus (${settings.focusMin}m)`,        color: '#6366f1' },
-    { id: 'short',  label: `☕ Istirahat (${settings.shortMin}m)`,     color: '#10b981' },
-    { id: 'long',   label: `🌙 Istirahat Panjang (${settings.longMin}m)`, color: '#3b82f6' },
+    { id: 'focus',  label: '🍅 Fokus',        color: '#6366f1' },
+    { id: 'short',  label: '☕ Istirahat',     color: '#10b981' },
+    { id: 'long',   label: '🌙 Istirahat Panjang', color: '#3b82f6' },
   ]
 
   // Timer state
