@@ -140,7 +140,14 @@ export default function Pomodoro() {
   const cycleDots = Array.from({ length: settings.sessionsBeforeLong }, (_, i) => i < sessionsDone)
 
   function saveSettings() {
-    setSettings(tempSettings)
+    const sanitized = {
+      focusMin: Math.max(1, Math.min(999, Number(tempSettings.focusMin) || 25)),
+      shortMin: Math.max(1, Math.min(999, Number(tempSettings.shortMin) || 5)),
+      longMin: Math.max(1, Math.min(999, Number(tempSettings.longMin) || 15)),
+      sessionsBeforeLong: Math.max(1, Math.min(24, Number(tempSettings.sessionsBeforeLong) || 4))
+    }
+    setSettings(sanitized)
+    setTempSettings(sanitized)
     setShowSettings(false)
     addToast('Pengaturan disimpan!', 'success')
   }
@@ -337,12 +344,29 @@ export default function Pomodoro() {
       <AnimatePresence>
         {showSettings && (
           <>
-            <motion.div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100 }}
+            <motion.div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 999 }}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setShowSettings(false)} />
             <motion.div
-              style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'var(--color-surface)', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 'var(--space-6)', zIndex: 101, paddingBottom: 'calc(var(--space-8) + env(safe-area-inset-bottom, 0px))' }}
-              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+              style={{
+                position: 'fixed',
+                bottom: 0,
+                left: '50%',
+                width: '100%',
+                maxWidth: 'var(--app-max-width)',
+                background: 'var(--color-surface)',
+                borderTopLeftRadius: 24,
+                borderTopRightRadius: 24,
+                padding: 'var(--space-6)',
+                zIndex: 1000,
+                paddingBottom: 'calc(var(--space-8) + env(safe-area-inset-bottom, 0px))',
+                boxShadow: '0 -10px 25px rgba(0,0,0,0.15)',
+                border: '1px solid var(--color-border)',
+                borderBottom: 'none'
+              }}
+              initial={{ y: '100%', x: '-50%' }}
+              animate={{ y: 0, x: '-50%' }}
+              exit={{ y: '100%', x: '-50%' }}
               transition={{ type: 'spring', stiffness: 350, damping: 30 }}
             >
               <h3 style={{ fontWeight: 'var(--font-weight-bold)', marginBottom: 'var(--space-4)', color: 'var(--color-text)' }}>
@@ -350,10 +374,10 @@ export default function Pomodoro() {
               </h3>
               <div className={styles.settingsCard} style={{ border: 'none', padding: 0, marginBottom: 'var(--space-4)' }}>
                 {[
-                  ['focusMin', '🍅 Durasi Fokus (menit)', 1, 60],
-                  ['shortMin', '☕ Istirahat Pendek (menit)', 1, 30],
-                  ['longMin', '🌙 Istirahat Panjang (menit)', 5, 60],
-                  ['sessionsBeforeLong', '🔁 Sesi sebelum istirahat panjang', 1, 8],
+                  ['focusMin', '🍅 Durasi Fokus (menit)', 1, 999],
+                  ['shortMin', '☕ Istirahat Pendek (menit)', 1, 999],
+                  ['longMin', '🌙 Istirahat Panjang (menit)', 1, 999],
+                  ['sessionsBeforeLong', '🔁 Sesi sebelum istirahat panjang', 1, 24],
                 ].map(([key, label, min, max]) => (
                   <div key={key} className={styles.settingRow}>
                     <span className={styles.settingLabel}>{label}</span>
@@ -361,7 +385,17 @@ export default function Pomodoro() {
                       type="number" min={min} max={max}
                       className={styles.settingInput}
                       value={tempSettings[key]}
-                      onChange={e => setTempSettings(s => ({ ...s, [key]: Number(e.target.value) }))}
+                      onChange={e => {
+                        const raw = e.target.value
+                        if (raw === '') {
+                          setTempSettings(s => ({ ...s, [key]: '' }))
+                          return
+                        }
+                        let val = Number(raw)
+                        if (isNaN(val)) return
+                        if (val > max) val = max
+                        setTempSettings(s => ({ ...s, [key]: val }))
+                      }}
                     />
                   </div>
                 ))}
