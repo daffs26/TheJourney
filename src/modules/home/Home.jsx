@@ -22,12 +22,6 @@ const MODULES = [
   // Row 3
   { id: 'finance',  label: 'Keuangan',        icon: Wallet,        path: '/finance',  color: 'var(--color-mod-finance)',  size: 'medium' },
   { id: 'ppt',      label: 'Presentasi',      icon: Presentation,  path: '/ppt',      color: 'var(--color-mod-ppt)',      size: 'medium' },
-  // Row 4 — Bonus (small)
-  { id: 'pomodoro', label: 'Pomodoro',        icon: Timer,         path: '/pomodoro',    color: 'var(--color-mod-pomodoro)', size: 'small' },
-  { id: 'deadline', label: 'Deadline Wall',   icon: Clock,         path: '/deadline',    color: 'var(--color-mod-ppt)',      size: 'small' },
-  { id: 'grades',   label: 'Nilai',           icon: TrendingUp,    path: '/grades',      color: 'var(--color-mod-courses)',  size: 'small' },
-  { id: 'ipk',      label: 'Kalkulator IPK',  icon: Calculator,    path: '/ipk',         color: 'var(--color-mod-ipk)',      size: 'small' },
-  { id: 'attend',   label: 'Absensi',         icon: ClipboardList, path: '/attendance',  color: 'var(--color-mod-todo)',     size: 'small' },
 ]
 
 function getGreeting() {
@@ -166,7 +160,7 @@ export default function Home() {
 
         {/* Module grid */}
         <section className={styles.section}>
-          <SectionHeader title="Menu Utama" />
+          <SectionHeader title="Menu Utama" onMore={() => navigate('/more-features')} />
           <motion.div
             className={styles.grid}
             variants={container}

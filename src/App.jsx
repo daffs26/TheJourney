@@ -23,6 +23,8 @@ const Pomodoro    = lazy(() => import('./modules/pomodoro/Pomodoro'))
 const Grades      = lazy(() => import('./modules/grades/Grades'))
 const Documents   = lazy(() => import('./modules/documents/Documents'))
 const Notifications = lazy(() => import('./modules/notifications/Notifications'))
+const MoreFeatures  = lazy(() => import('./modules/more-features/MoreFeatures'))
+
 
 
 function App() {
@@ -73,6 +75,7 @@ function App() {
             <Route path="/grades"        element={<Grades />} />
             <Route path="/documents"     element={<Documents />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/more-features"  element={<MoreFeatures />} />
             <Route path="*"               element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
