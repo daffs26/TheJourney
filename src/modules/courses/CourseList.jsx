@@ -20,13 +20,14 @@ const DEFAULT_FORM = {
   lecturer: '',
   room: '',
   color: COURSE_COLORS[0],
-  day: 'Senin' // Default day selection
+  day: 'Senin', // Default day selection
+  semester: 1
 }
 
 export default function CourseList() {
   const navigate = useNavigate()
   const { courses, loading, fetchCourses, addCourse, deleteCourse } = useCoursesStore()
-  const { addToast } = useAppStore()
+  const { addToast, profile } = useAppStore()
 
   const [dayFilter, setDayFilter] = useState('all') // all | Senin - Minggu
   const [showForm, setShowForm] = useState(false)
@@ -55,6 +56,14 @@ export default function CourseList() {
     })
   }, [courses, dayFilter])
 
+  const handleOpenForm = () => {
+    setForm({
+      ...DEFAULT_FORM,
+      semester: profile?.semester || 1
+    })
+    setShowForm(true)
+  }
+
   const handleAdd = async () => {
     if (!form.name.trim()) {
       addToast('Nama mata kuliah wajib diisi!', 'warning')
@@ -64,7 +73,10 @@ export default function CourseList() {
     try {
       await addCourse(form)
       addToast(`${form.name} berhasil ditambahkan!`, 'success')
-      setForm(DEFAULT_FORM)
+      setForm({
+        ...DEFAULT_FORM,
+        semester: profile?.semester || 1
+      })
       setShowForm(false)
     } catch (e) {
       addToast('Gagal menambahkan mata kuliah', 'error')
@@ -87,7 +99,7 @@ export default function CourseList() {
         <button
           id="courses-add-btn"
           className={styles.addBtn}
-          onClick={() => setShowForm(true)}
+          onClick={handleOpenForm}
         >
           <Plus size={18} strokeWidth={2.5} /> Tambah Matkul
         </button>
@@ -118,7 +130,7 @@ export default function CourseList() {
             {[1,2,3].map(i => <div key={i} className={`${styles.skeletonCard} skeleton`} />)}
           </div>
         ) : processedCourses.length === 0 ? (
-          <EmptyState onAdd={() => setShowForm(true)} />
+          <EmptyState onAdd={handleOpenForm} />
         ) : (
           <motion.div
             className={styles.list}
@@ -170,17 +182,28 @@ export default function CourseList() {
                 </Field>
               </div>
 
-              {/* Day Selector dropdown */}
-              <Field label="Hari Kuliah *">
-                <select
-                  id="course-day"
-                  className={styles.input}
-                  value={form.day || 'Senin'}
-                  onChange={e => setForm(f => ({ ...f, day: e.target.value }))}
-                >
-                  {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
-                </select>
-              </Field>
+              <div className={styles.row}>
+                <Field label="Hari Kuliah *">
+                  <select
+                    id="course-day"
+                    className={styles.input}
+                    value={form.day || 'Senin'}
+                    onChange={e => setForm(f => ({ ...f, day: e.target.value }))}
+                  >
+                    {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </Field>
+                <Field label="Semester *">
+                  <select
+                    id="course-semester"
+                    className={styles.input}
+                    value={form.semester || 1}
+                    onChange={e => setForm(f => ({ ...f, semester: parseInt(e.target.value) }))}
+                  >
+                    {[1,2,3,4,5,6,7,8].map(s => <option key={s} value={s}>Semester {s}</option>)}
+                  </select>
+                </Field>
+              </div>
 
               <Field label="Dosen Pengampu">
                 <input
@@ -264,6 +287,9 @@ function CourseCard({ course, onOpen, onDelete }) {
           <div className={styles.cardMeta}>
             {course.day && (
               <span className={styles.metaTag}>📅 {course.day}</span>
+            )}
+            {course.semester && (
+              <span className={styles.metaTag}>🎓 Sem {course.semester}</span>
             )}
             {course.code && <span className={styles.metaTag}>{course.code}</span>}
             <span className={styles.metaTag}>{course.sks} SKS</span>
