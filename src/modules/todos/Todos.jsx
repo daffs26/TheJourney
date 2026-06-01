@@ -85,7 +85,7 @@ export default function Todos() {
         {filtered.length === 0 ? (
           <div className={styles.empty}>
             <CheckSquare size={48} strokeWidth={1} style={{ opacity: 0.3 }} />
-            <p>{filter === 'completed' ? 'Belum ada tugas selesai' : 'Tidak ada tugas aktif 🎉'}</p>
+            <p>{filter === 'completed' ? 'Belum ada tugas selesai' : 'Tidak ada tugas aktif'}</p>
             {filter !== 'completed' && (
               <button className={styles.emptyBtn} onClick={() => setShowForm(true)}>
                 <Plus size={14} /> Tambah Tugas
