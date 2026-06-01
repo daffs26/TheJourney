@@ -142,7 +142,6 @@ export default function CourseList() {
               <CourseCard
                 key={course.id}
                 course={course}
-                onOpen={() => navigate(`/courses/${course.id}`)}
                 onDelete={() => setDeleteId(course.id)}
               />
             ))}
@@ -271,14 +270,14 @@ export default function CourseList() {
   )
 }
 
-function CourseCard({ course, onOpen, onDelete }) {
+function CourseCard({ course, onDelete }) {
   return (
     <motion.div
       className={styles.card}
       variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 350, damping: 25 } } }}
     >
       <div className={styles.cardAccent} style={{ background: course.color }} />
-      <div className={styles.cardBody} onClick={onOpen}>
+      <div className={styles.cardBody}>
         <div className={styles.cardIcon} style={{ background: `${course.color}18`, color: course.color }}>
           <BookOpen size={20} strokeWidth={1.8} />
         </div>
@@ -298,7 +297,6 @@ function CourseCard({ course, onOpen, onDelete }) {
             )}
           </div>
         </div>
-        <ChevronRight size={18} className={styles.cardChevron} />
       </div>
       <button className={styles.deleteIconBtn} onClick={e => { e.stopPropagation(); onDelete() }}>
         <Trash2 size={14} />

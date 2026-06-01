@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Calendar, Trash2, Clock, MapPin, Edit2, X } from 'lucide-react'
+import { Plus, Calendar, Trash2, Clock, MapPin, Edit2, X, ChevronRight } from 'lucide-react'
 import { useScheduleStore } from '../../store/useScheduleStore'
 import { useCoursesStore } from '../../store/useCoursesStore'
 import { useAppStore } from '../../store/useAppStore'
@@ -36,6 +37,7 @@ function getAllMonths() {
 }
 
 export default function Schedule() {
+  const navigate = useNavigate()
   const [activeDay, setActiveDay] = useState(TODAY_INDEX)
   const [selectedMonth, setSelectedMonth] = useState('all') // all | YYYY-MM
   const [showForm, setShowForm] = useState(false)
@@ -213,23 +215,36 @@ export default function Schedule() {
                   <div className={styles.timelineLine} style={{ borderColor: sched.color }} />
                   <span className={styles.endTime}>{sched.endTime}</span>
                 </div>
-                <div className={styles.schedCard} style={{ borderLeftColor: sched.color }}>
-                  <div className={styles.schedName}>{sched.course?.name || sched.courseName || 'Mata Kuliah'}</div>
-                  <div className={styles.schedMeta}>
-                    <span><Clock size={11} /> {sched.startTime}–{sched.endTime}</span>
-                    {sched.room && <span><MapPin size={11} /> {sched.room}</span>}
-                  </div>
-                  {sched.months && sched.months.length > 0 && (
-                    <div style={{ fontSize: '9px', color: 'var(--color-mod-schedule)', fontWeight: 'bold', marginTop: '4px' }}>
-                      📅 Aktif: {sched.months.map(m => allMonths.find(fm => fm.value === m)?.label || m).join(', ')}
+                <div
+                  className={`${styles.schedCard} ${sched.courseId ? styles.schedCardClickable : ''}`}
+                  style={{ borderLeftColor: sched.color }}
+                  onClick={() => {
+                    if (sched.courseId) {
+                      navigate(`/courses/${sched.courseId}`)
+                    }
+                  }}
+                >
+                  <div className={styles.schedCardBody}>
+                    <div className={styles.schedName}>{sched.course?.name || sched.courseName || 'Mata Kuliah'}</div>
+                    <div className={styles.schedMeta}>
+                      <span><Clock size={11} /> {sched.startTime}–{sched.endTime}</span>
+                      {sched.room && <span><MapPin size={11} /> {sched.room}</span>}
                     </div>
+                    {sched.months && sched.months.length > 0 && (
+                      <div style={{ fontSize: '9px', color: 'var(--color-mod-schedule)', fontWeight: 'bold', marginTop: '4px' }}>
+                        📅 Aktif: {sched.months.map(m => allMonths.find(fm => fm.value === m)?.label || m).join(', ')}
+                      </div>
+                    )}
+                  </div>
+                  {sched.courseId && (
+                    <ChevronRight size={16} className={styles.chevron} />
                   )}
                   {/* Actions buttons */}
                   <div className={styles.cardActions}>
-                    <button className={`${styles.actionBtn} ${styles.editBtn}`} onClick={() => openEditModal(sched)} title="Ubah Jadwal">
+                    <button className={`${styles.actionBtn} ${styles.editBtn}`} onClick={(e) => { e.stopPropagation(); openEditModal(sched); }} title="Ubah Jadwal">
                       <Edit2 size={13} />
                     </button>
-                    <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={() => handleDelete(sched.id)} title="Hapus Jadwal">
+                    <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={(e) => { e.stopPropagation(); handleDelete(sched.id); }} title="Hapus Jadwal">
                       <Trash2 size={13} />
                     </button>
                   </div>

@@ -72,7 +72,7 @@ export default function CourseDetail() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header} style={{ '--course-color': course.color }}>
-        <button className={styles.backBtn} onClick={() => navigate('/courses')}>
+        <button className={styles.backBtn} onClick={() => navigate(-1)}>
           <ArrowLeft size={20} />
         </button>
         <div className={styles.headerInfo}>
