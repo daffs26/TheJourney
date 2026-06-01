@@ -7,9 +7,9 @@
 
 :root {
   /* ---- Color Palette (Light Mode) ---- */
-  --color-primary:       #2563EB;
-  --color-primary-dark:  #1D4ED8;
-  --color-primary-light: #3B82F6;
+  --color-primary:       #3B82F6;
+  --color-primary-dark:  #2563EB;
+  --color-primary-light: #60A5FA;
   --color-primary-pale:  #EFF6FF;
   --color-accent:        #38BDF8;
   --color-accent-glow:   rgba(56, 189, 248, 0.3);
@@ -36,7 +36,7 @@
 
   /* Module colors */
   --color-mod-schedule:    #8B5CF6;
-  --color-mod-courses:     #2563EB;
+  --color-mod-courses:     #3B82F6;
   --color-mod-todo:        #10B981;
   --color-mod-ai:          #06B6D4;
   --color-mod-journal:     #F59E0B;
@@ -95,7 +95,7 @@
   --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.08);
   --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.10);
   --shadow-xl:  0 16px 48px rgba(0, 0, 0, 0.12);
-  --shadow-primary: 0 4px 20px rgba(37, 99, 235, 0.25);
+  --shadow-primary: 0 4px 20px rgba(59, 130, 246, 0.25);
   --shadow-glow:    0 0 20px rgba(56, 189, 248, 0.2);
 
   /* ---- Transitions ---- */
@@ -135,7 +135,7 @@ html.dark {
   --color-text-muted:    #64748B;
   --color-text-inverse:  #0F172A;
 
-  --color-primary-pale:  rgba(37, 99, 235, 0.15);
+  --color-primary-pale:  rgba(59, 130, 246, 0.15);
   --color-success-pale:  rgba(16, 185, 129, 0.12);
   --color-warning-pale:  rgba(245, 158, 11, 0.12);
   --color-danger-pale:   rgba(239, 68, 68, 0.12);
@@ -144,5 +144,5 @@ html.dark {
   --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.25);
   --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.35);
   --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.45);
-  --shadow-primary: 0 4px 20px rgba(37, 99, 235, 0.4);
+  --shadow-primary: 0 4px 20px rgba(59, 130, 246, 0.4);
 }
