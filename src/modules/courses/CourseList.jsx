@@ -285,10 +285,10 @@ function CourseCard({ course, onDelete }) {
           <h3 className={styles.cardName}>{course.name}</h3>
           <div className={styles.cardMeta}>
             {course.day && (
-              <span className={styles.metaTag}>📅 {course.day}</span>
+              <span className={styles.metaTag}>{course.day}</span>
             )}
             {course.semester && (
-              <span className={styles.metaTag}>🎓 Sem {course.semester}</span>
+              <span className={styles.metaTag}>Sem {course.semester}</span>
             )}
             {course.code && <span className={styles.metaTag}>{course.code}</span>}
             <span className={styles.metaTag}>{course.sks} SKS</span>

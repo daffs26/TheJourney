@@ -283,7 +283,7 @@ export default function Grades() {
                             </div>
                           ))}
                         </div>
-                        {entry.note && <p style={{ marginTop: 'var(--space-2)', fontSize: 11, color: 'var(--color-text-sub)' }}>📝 {entry.note}</p>}
+                        {entry.note && <p style={{ marginTop: 'var(--space-2)', fontSize: 11, color: 'var(--color-text-sub)' }}>Catatan: {entry.note}</p>}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -305,7 +305,7 @@ export default function Grades() {
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', stiffness: 350, damping: 30 }}>
               <h3 style={{ fontWeight: 700, marginBottom: 'var(--space-4)', color: 'var(--color-text)' }}>
-                {editing ? '✏️ Edit Nilai' : '➕ Tambah Nilai'}
+                {editing ? 'Edit Nilai' : 'Tambah Nilai'}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                 <div>

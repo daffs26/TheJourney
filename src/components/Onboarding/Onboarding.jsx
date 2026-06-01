@@ -165,7 +165,7 @@ export default function Onboarding() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
           >
-            Mulai TheJourney 🚀
+            Mulai TheJourney
           </motion.button>
         </motion.div>
       </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Settings2, User, Info, ArrowLeft, Save, Palette } from 'lucide-react'
+import { Settings2, User, Info, ArrowLeft, Save, Palette, GraduationCap } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 import styles from './Settings.module.css'
 
@@ -112,7 +112,7 @@ export default function Settings() {
               className={`${styles.themeOption} ${theme === 'light' ? styles.themeOptionActive : ''}`}
               onClick={() => setTheme('light')}
             >
-              ☀️ Terang
+              Terang
             </button>
             <button
               id="settings-theme-dark"
@@ -120,7 +120,7 @@ export default function Settings() {
               className={`${styles.themeOption} ${theme === 'dark' ? styles.themeOptionActive : ''}`}
               onClick={() => setTheme('dark')}
             >
-              🌙 Gelap
+              Gelap
             </button>
             <button
               id="settings-theme-system"
@@ -128,7 +128,7 @@ export default function Settings() {
               className={`${styles.themeOption} ${theme === 'system' ? styles.themeOptionActive : ''}`}
               onClick={() => setTheme('system')}
             >
-              💻 Sistem
+              Sistem
             </button>
           </div>
         </Section>
@@ -137,7 +137,9 @@ export default function Settings() {
 
         <Section title="Tentang App" icon={Info}>
           <div className={styles.about}>
-            <div className={styles.appLogo}>🎓</div>
+            <div className={styles.appLogo}>
+              <GraduationCap size={28} color="white" strokeWidth={1.8} />
+            </div>
             <div>
               <p className={styles.appName}>TheJourney</p>
               <p className={styles.appVersion}>v1.0.0 · Sistem Informasi Edition</p>

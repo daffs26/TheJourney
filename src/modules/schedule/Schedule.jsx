@@ -232,7 +232,7 @@ export default function Schedule() {
                     </div>
                     {sched.months && sched.months.length > 0 && (
                       <div style={{ fontSize: '9px', color: 'var(--color-mod-schedule)', fontWeight: 'bold', marginTop: '4px' }}>
-                        📅 Aktif: {sched.months.map(m => allMonths.find(fm => fm.value === m)?.label || m).join(', ')}
+                        Aktif: {sched.months.map(m => allMonths.find(fm => fm.value === m)?.label || m).join(', ')}
                       </div>
                     )}
                   </div>

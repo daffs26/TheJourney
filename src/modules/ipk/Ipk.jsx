@@ -311,13 +311,13 @@ export default function Ipk() {
           className={`${styles.tab} ${activeTab === 'calculator' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('calculator')}
         >
-          🧮 Hitung IPK & IPS
+          Hitung IPK & IPS
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'planner' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('planner')}
         >
-          🎯 Target & SKS Planner
+          Target & SKS Planner
         </button>
       </div>
 
@@ -369,7 +369,7 @@ export default function Ipk() {
             <div className={styles.manualCard}>
               <div className={styles.manualCardHeader}>
                 <h4 className={styles.manualCardTitle}>
-                  📝 Input Manual IPS & SKS (Semester {activeSemester})
+                  Input Manual IPS & SKS (Semester {activeSemester})
                 </h4>
                 {manualGpa[activeSemester] && (
                   <span className={styles.manualBadge}>Manual</span>

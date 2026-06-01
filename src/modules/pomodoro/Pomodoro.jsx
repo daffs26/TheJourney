@@ -30,9 +30,9 @@ export default function Pomodoro() {
   const [tempSettings, setTempSettings] = useState(settings)
 
   const MODES = [
-    { id: 'focus',  label: '🍅 Fokus',        color: '#6366f1' },
-    { id: 'short',  label: '☕ Istirahat',     color: '#10b981' },
-    { id: 'long',   label: '🌙 Istirahat Panjang', color: '#3b82f6' },
+    { id: 'focus',  label: 'Fokus',        color: '#6366f1' },
+    { id: 'short',  label: 'Istirahat',     color: '#10b981' },
+    { id: 'long',   label: 'Istirahat Panjang', color: '#3b82f6' },
   ]
 
   // Timer state
@@ -87,7 +87,7 @@ export default function Pomodoro() {
     const dur = mode === 'focus' ? settings.focusMin : mode === 'short' ? settings.shortMin : settings.longMin
 
     db.pomodoroSessions.add({ type, duration: dur, completedAt: new Date(), date: today })
-    addToast(type === 'focus' ? '🍅 Sesi fokus selesai! Waktunya istirahat.' : '✅ Istirahat selesai! Siap fokus lagi.', 'success')
+    addToast(type === 'focus' ? 'Sesi fokus selesai! Waktunya istirahat.' : 'Istirahat selesai! Siap fokus lagi.', 'success')
 
     if (type === 'focus') {
       const newDone = sessionsDone + 1
@@ -239,7 +239,7 @@ export default function Pomodoro() {
             </button>
             {task && (
               <p style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-sm)', textAlign: 'center', maxWidth: '80%' }}>
-                🎯 {task}
+                Tugas: {task}
               </p>
             )}
             <TimerContent dark />
@@ -277,7 +277,7 @@ export default function Pomodoro() {
               <ArrowLeft size={18} />
             </button>
             <div>
-              <h1 className={styles.title} style={{ margin: 0 }}>🍅 Pomodoro</h1>
+              <h1 className={styles.title} style={{ margin: 0 }}>Pomodoro</h1>
               <p className={styles.subtitle} style={{ margin: 0 }}>Teknik fokus 25 menit untuk produktivitas maksimal</p>
             </div>
           </div>
@@ -370,14 +370,14 @@ export default function Pomodoro() {
               transition={{ type: 'spring', stiffness: 350, damping: 30 }}
             >
               <h3 style={{ fontWeight: 'var(--font-weight-bold)', marginBottom: 'var(--space-4)', color: 'var(--color-text)' }}>
-                ⚙️ Pengaturan Timer
+                Pengaturan Timer
               </h3>
               <div className={styles.settingsCard} style={{ border: 'none', padding: 0, marginBottom: 'var(--space-4)' }}>
                 {[
-                  ['focusMin', '🍅 Durasi Fokus (menit)', 1, 999],
-                  ['shortMin', '☕ Istirahat Pendek (menit)', 1, 999],
-                  ['longMin', '🌙 Istirahat Panjang (menit)', 1, 999],
-                  ['sessionsBeforeLong', '🔁 Sesi sebelum istirahat panjang', 1, 24],
+                  ['focusMin', 'Durasi Fokus (menit)', 1, 999],
+                  ['shortMin', 'Istirahat Pendek (menit)', 1, 999],
+                  ['longMin', 'Istirahat Panjang (menit)', 1, 999],
+                  ['sessionsBeforeLong', 'Sesi sebelum istirahat panjang', 1, 24],
                 ].map(([key, label, min, max]) => (
                   <div key={key} className={styles.settingRow}>
                     <span className={styles.settingLabel}>{label}</span>
