@@ -43,6 +43,11 @@ export default function Ipk() {
   // Local list of courses with grades
   const [localCourses, setLocalCourses] = useState([])
 
+  // Manual IPS & SKS state
+  const [manualGpa, setManualGpa] = useState({})
+  const [manualIpsInput, setManualIpsInput] = useState('')
+  const [manualSksInput, setManualSksInput] = useState('')
+
   // Planner inputs
   const [currentIpk, setCurrentIpk] = useState('')
   const [currentSks, setCurrentSks] = useState('')
@@ -52,12 +57,77 @@ export default function Ipk() {
 
   useEffect(() => {
     fetchCourses()
+    // Load manual GPA data
+    const loadManualData = async () => {
+      try {
+        const data = await db.settings.get('manualGpaData')
+        if (data) {
+          setManualGpa(JSON.parse(data.value))
+        }
+      } catch (e) {
+        console.error('Failed to load manual gpa data:', e)
+      }
+    }
+    loadManualData()
   }, [])
 
   useEffect(() => {
     // When course list updates, load details
     setLocalCourses(courses)
   }, [courses])
+
+  // Sync inputs with activeSemester manualGpa data
+  useEffect(() => {
+    if (manualGpa[activeSemester]) {
+      setManualIpsInput(String(manualGpa[activeSemester].ips))
+      setManualSksInput(String(manualGpa[activeSemester].sks))
+    } else {
+      setManualIpsInput('')
+      setManualSksInput('')
+    }
+  }, [activeSemester, manualGpa])
+
+  const handleSaveManual = async () => {
+    const ips = parseFloat(manualIpsInput)
+    const sks = parseInt(manualSksInput)
+    
+    if (isNaN(ips) || ips < 0 || ips > 4.0) {
+      addToast('IPS harus bernilai antara 0.00 s/d 4.00!', 'warning')
+      return
+    }
+    if (isNaN(sks) || sks < 1 || sks > 30) {
+      addToast('SKS harus bernilai antara 1 s/d 30!', 'warning')
+      return
+    }
+    
+    const updated = {
+      ...manualGpa,
+      [activeSemester]: { ips, sks }
+    }
+    
+    try {
+      await db.settings.put({ key: 'manualGpaData', value: JSON.stringify(updated), updatedAt: new Date() })
+      setManualGpa(updated)
+      addToast(`Data IPS Semester ${activeSemester} berhasil disimpan!`, 'success')
+    } catch (e) {
+      addToast('Gagal menyimpan data manual', 'error')
+    }
+  }
+
+  const handleDeleteManual = async () => {
+    const updated = { ...manualGpa }
+    delete updated[activeSemester]
+    
+    try {
+      await db.settings.put({ key: 'manualGpaData', value: JSON.stringify(updated), updatedAt: new Date() })
+      setManualGpa(updated)
+      setManualIpsInput('')
+      setManualSksInput('')
+      addToast(`Data IPS Semester ${activeSemester} dihapus!`, 'success')
+    } catch (e) {
+      addToast('Gagal menghapus data manual', 'error')
+    }
+  }
 
   // Handle grade change
   const handleGradeChange = async (courseId, grade) => {
@@ -75,41 +145,65 @@ export default function Ipk() {
 
   // Calculations
   const calculateMetrics = () => {
-    // Filter courses with assigned grades
-    const gradedCourses = localCourses.filter(
-      c => c.grade && GRADE_VALUES[c.grade] !== null
-    )
-
-    // Calculate Cumulative IPK
     let totalPoints = 0
     let totalSks = 0
-    gradedCourses.forEach(c => {
-      totalPoints += c.sks * GRADE_VALUES[c.grade]
-      totalSks += c.sks
-    })
+    let totalAttemptedSks = 0
+
+    // Loop through semesters 1..8
+    for (let sem = 1; sem <= 8; sem++) {
+      if (manualGpa[sem]) {
+        const m = manualGpa[sem]
+        totalPoints += m.ips * m.sks
+        totalSks += m.sks
+        totalAttemptedSks += m.sks
+      } else {
+        // Automatic calculation from database courses for this semester
+        const semCourses = localCourses.filter(c => c.semester === sem)
+        const gradedSemCourses = semCourses.filter(c => c.grade && GRADE_VALUES[c.grade] !== null)
+        
+        let semPoints = 0
+        let semSks = 0
+        gradedSemCourses.forEach(c => {
+          semPoints += c.sks * GRADE_VALUES[c.grade]
+          semSks += c.sks
+        })
+        
+        totalPoints += semPoints
+        totalSks += semSks
+        totalAttemptedSks += semCourses.reduce((acc, curr) => acc + curr.sks, 0)
+      }
+    }
+
+    // Cumulative IPK
     const cumulativeIpk = totalSks > 0 ? (totalPoints / totalSks).toFixed(2) : '0.00'
 
-    // Calculate Active Semester IPS (GPA of active semester)
-    const semGradedCourses = gradedCourses.filter(c => c.semester === activeSemester)
-    let semPoints = 0
-    let semSks = 0
-    semGradedCourses.forEach(c => {
-      semPoints += c.sks * GRADE_VALUES[c.grade]
-      semSks += c.sks
-    })
-    const semesterIps = semSks > 0 ? (semPoints / semSks).toFixed(2) : '0.00'
-
-    // Total SKS in database
-    const totalAttemptedSks = localCourses.reduce((acc, curr) => acc + curr.sks, 0)
-    const activeSemTotalSks = localCourses
-      .filter(c => c.semester === activeSemester)
-      .reduce((acc, curr) => acc + curr.sks, 0)
+    // Active Semester IPS
+    let activeSemIps = '0.00'
+    let activeSemSks = 0
+    
+    if (manualGpa[activeSemester]) {
+      const m = manualGpa[activeSemester]
+      activeSemIps = m.ips.toFixed(2)
+      activeSemSks = m.sks
+    } else {
+      const activeSemCourses = localCourses.filter(c => c.semester === activeSemester)
+      const gradedActiveSemCourses = activeSemCourses.filter(c => c.grade && GRADE_VALUES[c.grade] !== null)
+      
+      let activePoints = 0
+      let activeSks = 0
+      gradedActiveSemCourses.forEach(c => {
+        activePoints += c.sks * GRADE_VALUES[c.grade]
+        activeSks += c.sks
+      })
+      activeSemIps = activeSks > 0 ? (activePoints / activeSks).toFixed(2) : '0.00'
+      activeSemSks = activeSemCourses.reduce((acc, curr) => acc + curr.sks, 0)
+    }
 
     return {
       cumulativeIpk,
       totalSks,
-      semesterIps,
-      activeSemTotalSks,
+      semesterIps: activeSemIps,
+      activeSemTotalSks: activeSemSks,
       totalAttemptedSks
     }
   }
@@ -269,6 +363,65 @@ export default function Ipk() {
               >
                 <ChevronRight size={16} />
               </button>
+            </div>
+
+            {/* Manual GPA/SKS Card */}
+            <div className={styles.manualCard}>
+              <div className={styles.manualCardHeader}>
+                <h4 className={styles.manualCardTitle}>
+                  📝 Input Manual IPS & SKS (Semester {activeSemester})
+                </h4>
+                {manualGpa[activeSemester] && (
+                  <span className={styles.manualBadge}>Manual</span>
+                )}
+              </div>
+              
+              <div className={styles.manualCardBody}>
+                <div className={styles.manualInputGroup}>
+                  <div className={styles.manualField}>
+                    <label className={styles.manualLabel}>IPS (IP Semester)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="4"
+                      className={styles.manualInput}
+                      placeholder="Contoh: 3.50"
+                      value={manualIpsInput}
+                      onChange={e => setManualIpsInput(e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.manualField}>
+                    <label className={styles.manualLabel}>SKS Lulus</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="30"
+                      className={styles.manualInput}
+                      placeholder="Contoh: 20"
+                      value={manualSksInput}
+                      onChange={e => setManualSksInput(e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className={styles.manualActions}>
+                  <button 
+                    onClick={handleSaveManual} 
+                    className={styles.manualSaveBtn}
+                  >
+                    Simpan
+                  </button>
+                  {manualGpa[activeSemester] && (
+                    <button 
+                      onClick={handleDeleteManual} 
+                      className={styles.manualDeleteBtn}
+                    >
+                      Hapus
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Course Grades List */}

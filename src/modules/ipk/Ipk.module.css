@@ -298,3 +298,121 @@
   margin-bottom: var(--space-4);
   opacity: 0.5;
 }
+
+/* Manual card styling */
+.manualCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.manualCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.manualCardTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-sub);
+}
+
+.manualBadge {
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  background: var(--color-primary-pale);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.manualCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.manualInputGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.manualField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.manualLabel {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.manualInput {
+  height: 38px;
+  padding: 0 var(--space-2);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.manualInput:focus {
+  border-color: var(--color-primary);
+}
+
+.manualActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.manualSaveBtn {
+  flex: 1;
+  height: 38px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: background var(--transition-fast);
+}
+
+.manualSaveBtn:hover {
+  background: var(--color-primary-dark);
+}
+
+.manualDeleteBtn {
+  width: 72px;
+  height: 38px;
+  background: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: background var(--transition-fast);
+}
+
+.manualDeleteBtn:hover {
+  background: #dc2626;
+}
