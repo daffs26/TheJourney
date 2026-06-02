@@ -172,7 +172,7 @@ function AppRoutes() {
     : { duration: 0.2, ease: 'easeInOut' }
 
   return (
-    <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
       <AnimatePresence mode="popLayout" initial={false} custom={direction}>
         <motion.div
           key={location.pathname}
@@ -187,6 +187,8 @@ function AppRoutes() {
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
+            minHeight: 0,
+            height: '100%',
           }}
         >
           <Suspense fallback={<LoadingScreen />}>
