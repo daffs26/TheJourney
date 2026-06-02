@@ -43,10 +43,10 @@ export const useScheduleStore = create((set, get) => ({
   getTodaySchedule: (currentSemester) => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
     const today = days[new Date().getDay()]
-    const activeSemester = currentSemester || 1
+    const activeSemester = Number(currentSemester || 1)
     return get().getByDay(today).filter(s => {
-      if (!s.semesters || s.semesters.length === 0) return true
-      return s.semesters.includes(Number(activeSemester))
+      if (s.semester === undefined || s.semester === null) return true
+      return Number(s.semester) === activeSemester
     })
   },
 

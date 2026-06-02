@@ -20,7 +20,7 @@ const DEFAULT_FORM = {
   endTime: '09:40',
   room: '',
   color: COLORS[0],
-  semesters: [], // Array of semesters: [1, 2, ..., 8]
+  semester: 1, // Single semester: 1 to 8
 }
 
 export default function Schedule() {
@@ -54,8 +54,8 @@ export default function Schedule() {
   const filteredDaySchedule = useMemo(() => {
     return daySchedule.filter(sched => {
       if (selectedSemester === 'all') return true
-      if (!sched.semesters || sched.semesters.length === 0) return true // Active for all semesters
-      return sched.semesters.includes(Number(selectedSemester))
+      if (sched.semester === undefined || sched.semester === null) return true // Active for all semesters
+      return Number(sched.semester) === Number(selectedSemester)
     })
   }, [daySchedule, selectedSemester])
 
@@ -68,11 +68,16 @@ export default function Schedule() {
       courseName: course?.name || '',
       color: course?.color || COLORS[0],
       room: course?.room || '',
+      semester: course?.semester || 1,
     }))
   }
 
   const openAddModal = () => {
-    setForm({ ...DEFAULT_FORM, day: DAYS[activeDay] })
+    setForm({ 
+      ...DEFAULT_FORM, 
+      day: DAYS[activeDay],
+      semester: profile?.semester || 1
+    })
     setIsEditing(null)
     setShowForm(true)
   }
@@ -86,7 +91,7 @@ export default function Schedule() {
       endTime: sched.endTime || '09:40',
       room: sched.room || '',
       color: sched.color || COLORS[0],
-      semesters: sched.semesters || [],
+      semester: sched.semester || 1,
     })
     setIsEditing(sched.id)
     setShowForm(true)
@@ -214,12 +219,8 @@ export default function Schedule() {
                     <div className={styles.schedMeta}>
                       <span><Clock size={11} /> {sched.startTime}–{sched.endTime}</span>
                       {sched.room && <span><MapPin size={11} /> {sched.room}</span>}
+                      {sched.semester && <span>Sem {sched.semester}</span>}
                     </div>
-                    {sched.semesters && sched.semesters.length > 0 && (
-                      <div style={{ fontSize: '9px', color: 'var(--color-mod-schedule)', fontWeight: 'bold', marginTop: '4px' }}>
-                        Aktif: {sched.semesters.map(sem => `Sem ${sem}`).join(', ')}
-                      </div>
-                    )}
                   </div>
                   {sched.courseId && (
                     <ChevronRight size={16} className={styles.chevron} />
@@ -291,32 +292,18 @@ export default function Schedule() {
                     value={form.room} onChange={e => setForm(f => ({ ...f, room: e.target.value }))} />
                 </FormField>
 
-                {/* Checklist for Active Semesters */}
-                <FormField label="Semester Aktif Kuliah (Kosongkan jika selalu aktif)">
-                  <div className={styles.monthsGrid}>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => {
-                      const checked = form.semesters.includes(sem)
-                      return (
-                        <label
-                          key={sem}
-                          className={`${styles.monthCheckboxLabel} ${checked ? styles.monthCheckboxLabelChecked : ''}`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            style={{ display: 'none' }}
-                            onChange={() => {
-                              const newSemesters = checked
-                                ? form.semesters.filter(val => val !== sem)
-                                : [...form.semesters, sem]
-                              setForm(f => ({ ...f, semesters: newSemesters }))
-                            }}
-                          />
-                          <span>Semester {sem}</span>
-                        </label>
-                      )
-                    })}
-                  </div>
+                {/* Single select dropdown for Semester */}
+                <FormField label="Semester *">
+                  <select
+                    id="sched-semester"
+                    className={styles.input}
+                    value={form.semester || 1}
+                    onChange={e => setForm(f => ({ ...f, semester: parseInt(e.target.value) }))}
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                      <option key={sem} value={sem}>Semester {sem}</option>
+                    ))}
+                  </select>
                 </FormField>
 
                 <FormField label="Warna">
