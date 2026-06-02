@@ -11,6 +11,8 @@
   padding: 0;
   -webkit-tap-highlight-color: transparent;
   -webkit-overflow-scrolling: touch;
+  /* Allow pan-y by default so one-finger vertical scroll is never blocked */
+  touch-action: pan-y;
 }
 
 html {
@@ -18,6 +20,8 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--space-4);
   -webkit-text-size-adjust: 100%;
+  /* Prevent the page from bouncing at the body level */
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -127,8 +131,13 @@ input, textarea, select { font-family: var(--font-family); }
   flex: 1;
   overflow-y: auto;
   padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + var(--space-4));
-  overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
   -webkit-overflow-scrolling: touch;
+  /* Explicitly allow one-finger vertical scrolling on this scroll container */
+  touch-action: pan-y;
+  /* Smooth scroll inertia on Android Chrome */
+  scroll-behavior: smooth;
 }
 
 .page-content {

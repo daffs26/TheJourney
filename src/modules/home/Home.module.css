@@ -141,6 +141,8 @@
   overflow-x: auto;
   padding-bottom: 4px;
   scrollbar-width: none;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 }
 
 .stats::-webkit-scrollbar { display: none; }

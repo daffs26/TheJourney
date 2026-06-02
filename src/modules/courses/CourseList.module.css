@@ -281,6 +281,8 @@
   gap: var(--space-2); background: var(--color-surface-2);
   border-bottom: 1px solid var(--color-border);
   scrollbar-width: none;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 }
 .dayBar::-webkit-scrollbar { display: none; }
 
