@@ -71,11 +71,11 @@ export default function Home() {
     const load = async () => {
       await fetchSchedules()
       await fetchTodos()
-      setTodaySchedule(getTodaySchedule())
+      setTodaySchedule(getTodaySchedule(profile?.semester))
       setTodoStats(getStats())
     }
     load()
-  }, [])
+  }, [profile?.semester])
 
   const firstName = profile.name?.split(' ')[0] || 'Pengguna'
   const now = new Date()

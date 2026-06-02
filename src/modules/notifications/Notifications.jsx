@@ -7,12 +7,14 @@ import {
 } from 'lucide-react'
 import { useScheduleStore } from '../../store/useScheduleStore'
 import { useTodosStore } from '../../store/useTodosStore'
+import { useAppStore } from '../../store/useAppStore'
 import styles from './Notifications.module.css'
 
 export default function Notifications() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('all') // all | class | todo
 
+  const { profile } = useAppStore()
   const { getTodaySchedule, fetchSchedules } = useScheduleStore()
   const { todos, fetchTodos } = useTodosStore()
 
@@ -22,10 +24,10 @@ export default function Notifications() {
     const load = async () => {
       await fetchSchedules()
       await fetchTodos()
-      setTodaySchedule(getTodaySchedule())
+      setTodaySchedule(getTodaySchedule(profile?.semester))
     }
     load()
-  }, [])
+  }, [profile?.semester])
 
   // Helper to check if date is today
   const isToday = (dateInput) => {

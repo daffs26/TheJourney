@@ -20,33 +20,20 @@ const DEFAULT_FORM = {
   endTime: '09:40',
   room: '',
   color: COLORS[0],
-  months: [], // Array of YYYY-MM active months
-}
-
-// Generate all 12 months for the current year (January to December)
-function getAllMonths() {
-  const list = []
-  const currentYear = new Date().getFullYear()
-  for (let m = 0; m < 12; m++) {
-    const d = new Date(currentYear, m, 1)
-    const value = `${currentYear}-${String(m + 1).padStart(2, '0')}`
-    const label = d.toLocaleDateString('id-ID', { month: 'long' })
-    list.push({ value, label })
-  }
-  return list
+  semesters: [], // Array of semesters: [1, 2, ..., 8]
 }
 
 export default function Schedule() {
   const navigate = useNavigate()
+  const { addToast, profile } = useAppStore()
   const [activeDay, setActiveDay] = useState(TODAY_INDEX)
-  const [selectedMonth, setSelectedMonth] = useState('all') // all | YYYY-MM
+  const [selectedSemester, setSelectedSemester] = useState(() => String(profile?.semester || 'all'))
   const [showForm, setShowForm] = useState(false)
   const [isEditing, setIsEditing] = useState(null) // schedule ID if editing
   const [form, setForm] = useState(DEFAULT_FORM)
 
   const { schedules, loading, fetchSchedules, addSchedule, updateSchedule, deleteSchedule, getByDay } = useScheduleStore()
   const { courses, fetchCourses } = useCoursesStore()
-  const { addToast } = useAppStore()
 
   useEffect(() => {
     fetchSchedules()
@@ -60,19 +47,17 @@ export default function Schedule() {
     }
   }, [])
 
-  const allMonths = useMemo(() => getAllMonths(), [])
-
   // Raw schedule for active day
   const daySchedule = getByDay(DAYS[activeDay])
 
-  // Filtered schedule for active day & month
+  // Filtered schedule for active day & semester
   const filteredDaySchedule = useMemo(() => {
     return daySchedule.filter(sched => {
-      if (selectedMonth === 'all') return true
-      if (!sched.months || sched.months.length === 0) return true // Active for all months
-      return sched.months.includes(selectedMonth)
+      if (selectedSemester === 'all') return true
+      if (!sched.semesters || sched.semesters.length === 0) return true // Active for all semesters
+      return sched.semesters.includes(Number(selectedSemester))
     })
-  }, [daySchedule, selectedMonth])
+  }, [daySchedule, selectedSemester])
 
   const handleCourseSelect = (e) => {
     const courseId = parseInt(e.target.value)
@@ -101,7 +86,7 @@ export default function Schedule() {
       endTime: sched.endTime || '09:40',
       room: sched.room || '',
       color: sched.color || COLORS[0],
-      months: sched.months || [],
+      semesters: sched.semesters || [],
     })
     setIsEditing(sched.id)
     setShowForm(true)
@@ -151,21 +136,21 @@ export default function Schedule() {
         </button>
       </div>
 
-      {/* Month Bar Filter */}
+      {/* Semester Bar Filter */}
       <div className={styles.monthBar}>
         <button
-          className={`${styles.monthBtn} ${selectedMonth === 'all' ? styles.monthBtnActive : ''}`}
-          onClick={() => setSelectedMonth('all')}
+          className={`${styles.monthBtn} ${selectedSemester === 'all' ? styles.monthBtnActive : ''}`}
+          onClick={() => setSelectedSemester('all')}
         >
-          Semua Bulan
+          Semua Semester
         </button>
-        {allMonths.map(m => (
+        {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
           <button
-            key={m.value}
-            className={`${styles.monthBtn} ${selectedMonth === m.value ? styles.monthBtnActive : ''}`}
-            onClick={() => setSelectedMonth(m.value)}
+            key={sem}
+            className={`${styles.monthBtn} ${selectedSemester === String(sem) ? styles.monthBtnActive : ''}`}
+            onClick={() => setSelectedSemester(String(sem))}
           >
-            {m.label}
+            Semester {sem}
           </button>
         ))}
       </div>
@@ -230,9 +215,9 @@ export default function Schedule() {
                       <span><Clock size={11} /> {sched.startTime}–{sched.endTime}</span>
                       {sched.room && <span><MapPin size={11} /> {sched.room}</span>}
                     </div>
-                    {sched.months && sched.months.length > 0 && (
+                    {sched.semesters && sched.semesters.length > 0 && (
                       <div style={{ fontSize: '9px', color: 'var(--color-mod-schedule)', fontWeight: 'bold', marginTop: '4px' }}>
-                        Aktif: {sched.months.map(m => allMonths.find(fm => fm.value === m)?.label || m).join(', ')}
+                        Aktif: {sched.semesters.map(sem => `Sem ${sem}`).join(', ')}
                       </div>
                     )}
                   </div>
@@ -306,14 +291,14 @@ export default function Schedule() {
                     value={form.room} onChange={e => setForm(f => ({ ...f, room: e.target.value }))} />
                 </FormField>
 
-                {/* Checklist for Active Months */}
-                <FormField label="Bulan Aktif Kuliah (Kosongkan jika selalu aktif)">
+                {/* Checklist for Active Semesters */}
+                <FormField label="Semester Aktif Kuliah (Kosongkan jika selalu aktif)">
                   <div className={styles.monthsGrid}>
-                    {allMonths.map(m => {
-                      const checked = form.months.includes(m.value)
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => {
+                      const checked = form.semesters.includes(sem)
                       return (
                         <label
-                          key={m.value}
+                          key={sem}
                           className={`${styles.monthCheckboxLabel} ${checked ? styles.monthCheckboxLabelChecked : ''}`}
                         >
                           <input
@@ -321,13 +306,13 @@ export default function Schedule() {
                             checked={checked}
                             style={{ display: 'none' }}
                             onChange={() => {
-                              const newMonths = checked
-                                ? form.months.filter(val => val !== m.value)
-                                : [...form.months, m.value]
-                              setForm(f => ({ ...f, months: newMonths }))
+                              const newSemesters = checked
+                                ? form.semesters.filter(val => val !== sem)
+                                : [...form.semesters, sem]
+                              setForm(f => ({ ...f, semesters: newSemesters }))
                             }}
                           />
-                          <span>{m.label}</span>
+                          <span>Semester {sem}</span>
                         </label>
                       )
                     })}

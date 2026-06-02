@@ -40,19 +40,18 @@ export const useScheduleStore = create((set, get) => ({
       .sort((a, b) => a.startTime.localeCompare(b.startTime))
   },
 
-  getTodaySchedule: () => {
+  getTodaySchedule: (currentSemester) => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
     const today = days[new Date().getDay()]
-    const now = new Date()
-    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+    const activeSemester = currentSemester || 1
     return get().getByDay(today).filter(s => {
-      if (!s.months || s.months.length === 0) return true
-      return s.months.includes(currentMonthStr)
+      if (!s.semesters || s.semesters.length === 0) return true
+      return s.semesters.includes(Number(activeSemester))
     })
   },
 
-  getNextClass: () => {
-    const todaySchedule = get().getTodaySchedule()
+  getNextClass: (currentSemester) => {
+    const todaySchedule = get().getTodaySchedule(currentSemester)
     const now = new Date()
     const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`
     return todaySchedule.find(s => s.startTime > currentTime) || null
@@ -63,11 +62,21 @@ export const useScheduleStore = create((set, get) => ({
     set({ reminderTimeouts: [] })
   },
 
-  scheduleTodayReminders: () => {
+  scheduleTodayReminders: async () => {
     get().clearReminders()
     if (!('Notification' in window) || Notification.permission !== 'granted') return
 
-    const todaySchedule = get().getTodaySchedule()
+    let activeSemester = 1
+    try {
+      const profileSetting = await db.settings.get('userProfile')
+      if (profileSetting) {
+        activeSemester = JSON.parse(profileSetting.value).semester || 1
+      }
+    } catch (e) {
+      console.error(e)
+    }
+
+    const todaySchedule = get().getTodaySchedule(activeSemester)
     const now = new Date()
 
     todaySchedule.forEach(sched => {
