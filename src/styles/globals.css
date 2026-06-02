@@ -11,8 +11,6 @@
   padding: 0;
   -webkit-tap-highlight-color: transparent;
   -webkit-overflow-scrolling: touch;
-  /* Allow pan-y by default so one-finger vertical scroll is never blocked */
-  touch-action: pan-y;
 }
 
 html {
@@ -47,6 +45,16 @@ body {
   position: relative;
   background-color: var(--color-bg);
   box-shadow: var(--shadow-xl);
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 /* ---- Typography ---- */
