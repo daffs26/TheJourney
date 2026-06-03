@@ -290,10 +290,12 @@
 }
 
 .attachmentCard {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2);
+  padding-right: var(--space-8);
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -357,7 +359,62 @@
 .attachmentSize {
   font-size: 9px;
   color: var(--color-text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
+}
+
+.attachmentTime {
+  font-size: 8.5px;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+.removeFileFromTodoBtn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.removeFileFromTodoBtn:hover {
+  background: var(--color-danger-pale);
+  color: var(--color-danger);
+}
+
+.addAttachmentInline {
+  margin-top: var(--space-3);
+  display: flex;
+  justify-content: flex-start;
+}
+
+.addAttachmentBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-2);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-sub);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.addAttachmentBtn:hover {
+  border-color: var(--color-mod-todo);
+  color: var(--color-mod-todo);
+  background: var(--color-surface);
 }
 
 /* ---- Zoom Lightbox Overlay ---- */

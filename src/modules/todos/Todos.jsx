@@ -31,7 +31,7 @@ const getFileIcon = (type) => {
 }
 
 export default function Todos() {
-  const { todos, loading, fetchTodos, addTodo, toggleTodo, deleteTodo,
+  const { todos, loading, fetchTodos, addTodo, updateTodo, toggleTodo, deleteTodo,
           filter, setFilter, getFilteredTodos, getStats, requestNotificationPermission } = useTodosStore()
   const { addToast } = useAppStore()
   const [showForm, setShowForm] = useState(false)
@@ -101,7 +101,8 @@ export default function Todos() {
           name: file.name,
           type: file.type || 'application/octet-stream',
           size: file.size,
-          blob: file
+          blob: file,
+          uploadedAt: new Date().toISOString()
         })
       }
     })
@@ -111,6 +112,43 @@ export default function Todos() {
 
   const handleRemoveFile = (index) => {
     setSelectedFiles(prev => prev.filter((_, idx) => idx !== index))
+  }
+
+  const handleAddFileToTodo = async (todo, e) => {
+    if (!e.target.files) return
+    const filesArray = Array.from(e.target.files)
+    const MAX_SIZE = 15 * 1024 * 1024 // 15MB
+    const validFiles = []
+
+    filesArray.forEach(file => {
+      if (file.size > MAX_SIZE) {
+        addToast(`File "${file.name}" terlalu besar! Maksimal 15MB.`, 'warning')
+      } else {
+        validFiles.push({
+          name: file.name,
+          type: file.type || 'application/octet-stream',
+          size: file.size,
+          blob: file,
+          uploadedAt: new Date().toISOString()
+        })
+      }
+    })
+
+    if (validFiles.length > 0) {
+      const currentFiles = todo.files || []
+      const updatedFiles = [...currentFiles, ...validFiles]
+      await updateTodo(todo.id, { files: updatedFiles })
+      addToast('Dokumen baru berhasil ditambahkan!', 'success')
+    }
+  }
+
+  const handleRemoveFileFromTodo = async (todo, index, e) => {
+    e.stopPropagation()
+    if (window.confirm('Hapus dokumen pendukung ini?')) {
+      const updatedFiles = (todo.files || []).filter((_, idx) => idx !== index)
+      await updateTodo(todo.id, { files: updatedFiles })
+      addToast('Dokumen pendukung dihapus', 'info')
+    }
   }
 
   const handleAdd = async () => {
@@ -269,38 +307,68 @@ export default function Todos() {
                             ) : null}
                           </div>
 
-                          {/* Supporting Documents List */}
-                          {todo.files && todo.files.length > 0 && (
-                            <div className={styles.detailAttachments}>
-                              <p className={styles.attachmentsTitle}>Dokumen Pendukung ({todo.files.length}):</p>
-                              <div className={styles.attachmentsGrid}>
-                                {todo.files.map((file, idx) => {
-                                  const isImage = file.type.startsWith('image/')
-                                  return (
-                                    <div key={idx} className={styles.attachmentCard} onClick={() => handleViewFile(file)}>
-                                      {isImage ? (
-                                        <div className={styles.imgPreview}>
-                                          <img src={getFileUrl(file)} alt={file.name} />
-                                        </div>
-                                      ) : (
-                                        <div className={styles.docIcon}>
-                                          {getFileIcon(file.type)}
-                                        </div>
-                                      )}
-                                      <div className={styles.attachmentInfo}>
-                                        <span className={styles.attachmentName} title={file.name}>
-                                          {file.name}
-                                        </span>
-                                        <span className={styles.attachmentSize}>
-                                          {formatSize(file.size)}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  )
-                                })}
-                              </div>
-                            </div>
-                          )}
+                           {/* Supporting Documents List */}
+                           <div className={styles.detailAttachments}>
+                             {todo.files && todo.files.length > 0 ? (
+                               <>
+                                 <p className={styles.attachmentsTitle}>Dokumen Pendukung ({todo.files.length}):</p>
+                                 <div className={styles.attachmentsGrid}>
+                                   {todo.files.map((file, idx) => {
+                                     const isImage = file.type.startsWith('image/')
+                                     return (
+                                       <div key={idx} className={styles.attachmentCard} onClick={() => handleViewFile(file)}>
+                                         {isImage ? (
+                                           <div className={styles.imgPreview}>
+                                             <img src={getFileUrl(file)} alt={file.name} />
+                                           </div>
+                                         ) : (
+                                           <div className={styles.docIcon}>
+                                             {getFileIcon(file.type)}
+                                           </div>
+                                         )}
+                                         <div className={styles.attachmentInfo}>
+                                           <span className={styles.attachmentName} title={file.name}>
+                                             {file.name}
+                                           </span>
+                                           <span className={styles.attachmentSize}>
+                                             {formatSize(file.size)}
+                                           </span>
+                                           <span className={styles.attachmentTime}>
+                                             Unggah: {file.uploadedAt 
+                                               ? new Date(file.uploadedAt).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) 
+                                               : 'Sebelumnya'}
+                                           </span>
+                                         </div>
+                                         <button
+                                           className={styles.removeFileFromTodoBtn}
+                                           onClick={(e) => handleRemoveFileFromTodo(todo, idx, e)}
+                                           title="Hapus dokumen"
+                                         >
+                                           <X size={12} />
+                                         </button>
+                                       </div>
+                                     )
+                                   })}
+                                 </div>
+                               </>
+                             ) : (
+                               <p className={styles.attachmentsTitle}>Belum ada dokumen pendukung</p>
+                             )}
+
+                             {/* Inline document uploader */}
+                             <div className={styles.addAttachmentInline}>
+                               <label htmlFor={`todo-add-file-${todo.id}`} className={styles.addAttachmentBtn}>
+                                 <Plus size={12} /> Tambah Dokumen Pendukung
+                               </label>
+                               <input
+                                 type="file"
+                                 id={`todo-add-file-${todo.id}`}
+                                 multiple
+                                 style={{ display: 'none' }}
+                                 onChange={(e) => handleAddFileToTodo(todo, e)}
+                               />
+                             </div>
+                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
