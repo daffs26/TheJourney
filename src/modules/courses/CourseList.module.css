@@ -277,8 +277,12 @@
 
 /* Day Bar Filter */
 .dayBar {
-  display: flex; overflow-x: auto; padding: var(--space-2) var(--space-4);
-  gap: var(--space-2); background: var(--color-surface-2);
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-2);
+  background: var(--color-surface-2);
   border-bottom: 1px solid var(--color-border);
   scrollbar-width: none;
   touch-action: pan-x;
@@ -287,14 +291,26 @@
 .dayBar::-webkit-scrollbar { display: none; }
 
 .dayBtn {
-  padding: 5px 12px; border-radius: var(--radius-full);
-  border: 1px solid var(--color-border); background: var(--color-surface);
-  color: var(--color-text-sub); font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold); cursor: pointer;
-  transition: all var(--transition-fast); white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-sub);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .dayBtnActive {
-  background: var(--color-mod-courses); color: white;
+  background: var(--color-mod-courses);
+  color: white;
   border-color: var(--color-mod-courses);
 }
