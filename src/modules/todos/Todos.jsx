@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus, CheckSquare, Square, Trash2, Flag,
-  Clock, ChevronDown, ChevronUp, Bell, BellOff, Filter
+  Clock, ChevronDown, ChevronUp, Bell, BellOff, Filter,
+  UploadCloud, X, FileText, File
 } from 'lucide-react'
 import { useTodosStore } from '../../store/useTodosStore'
 import { useAppStore } from '../../store/useAppStore'
@@ -18,7 +19,15 @@ const CATEGORIES = ['Kuliah', 'Tugas', 'UTS/UAS', 'Proyek', 'Personal', 'Lainnya
 
 const DEFAULT_FORM = {
   title: '', description: '', category: 'Kuliah',
-  priority: 'medium', deadline: '', reminderAt: '',
+  priority: 'medium', deadline: '', reminderAt: '', reminderType: 'none',
+}
+
+const getFileIcon = (type) => {
+  if (type.includes('pdf')) return <FileText size={18} color="#EF4444" />
+  if (type.includes('word') || type.includes('officedocument.wordprocessing')) return <FileText size={18} color="#2563EB" />
+  if (type.includes('spreadsheet') || type.includes('officedocument.spreadsheet')) return <FileText size={18} color="#10B981" />
+  if (type.includes('text/plain')) return <FileText size={18} color="#475569" />
+  return <File size={18} color="#94A3B8" />
 }
 
 export default function Todos() {
@@ -29,20 +38,90 @@ export default function Todos() {
   const [form, setForm] = useState(DEFAULT_FORM)
   const [showFilter, setShowFilter] = useState(false)
   const [expandedId, setExpandedId] = useState(null)
+  
+  // Custom states and refs for document uploads and lightbox zoom
+  const [selectedFiles, setSelectedFiles] = useState([])
+  const [zoomPhotoUrl, setZoomPhotoUrl] = useState(null)
+  const objectUrlsMap = useRef({})
 
   useEffect(() => {
     fetchTodos()
     requestNotificationPermission()
+
+    // Cleanup object URLs on unmount
+    return () => {
+      Object.values(objectUrlsMap.current).forEach(url => URL.revokeObjectURL(url))
+    }
   }, [])
 
   const filtered = getFilteredTodos()
   const stats = getStats()
 
+  const formatSize = (bytes) => {
+    if (bytes === 0) return '0 B'
+    const k = 1024
+    const sizes = ['B', 'KB', 'MB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
+  }
+
+  const getFileUrl = (file) => {
+    const key = `${file.name}-${file.size}`
+    if (!objectUrlsMap.current[key]) {
+      objectUrlsMap.current[key] = URL.createObjectURL(file.blob)
+    }
+    return objectUrlsMap.current[key]
+  }
+
+  const handleViewFile = (file) => {
+    const url = getFileUrl(file)
+    if (file.type.startsWith('image/')) {
+      setZoomPhotoUrl(url)
+    } else {
+      const a = document.createElement('a')
+      a.href = url
+      a.download = file.name
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
+  }
+
+  const handleFileSelect = (e) => {
+    if (!e.target.files) return
+    const filesArray = Array.from(e.target.files)
+    const MAX_SIZE = 15 * 1024 * 1024 // 15MB
+    const validFiles = []
+
+    filesArray.forEach(file => {
+      if (file.size > MAX_SIZE) {
+        addToast(`File "${file.name}" terlalu besar! Maksimal 15MB.`, 'warning')
+      } else {
+        validFiles.push({
+          name: file.name,
+          type: file.type || 'application/octet-stream',
+          size: file.size,
+          blob: file
+        })
+      }
+    })
+
+    setSelectedFiles(prev => [...prev, ...validFiles])
+  }
+
+  const handleRemoveFile = (index) => {
+    setSelectedFiles(prev => prev.filter((_, idx) => idx !== index))
+  }
+
   const handleAdd = async () => {
     if (!form.title.trim()) { addToast('Judul tugas wajib diisi!', 'warning'); return }
-    await addTodo(form)
+    await addTodo({
+      ...form,
+      files: selectedFiles
+    })
     addToast('Tugas ditambahkan!', 'success')
     setForm(DEFAULT_FORM)
+    setSelectedFiles([])
     setShowForm(false)
   }
 
@@ -142,7 +221,17 @@ export default function Todos() {
                               {new Date(todo.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                             </span>
                           )}
-                          {todo.reminderAt && <Bell size={10} color="var(--color-primary)" />}
+                          {(todo.reminderAt || todo.reminderType === 'weekly') && (
+                            <span className={styles.metaBadge} style={{ color: 'var(--color-primary)' }}>
+                              <Bell size={10} />
+                              {todo.reminderType === 'weekly' ? 'Mingguan' : 'Sekali'}
+                            </span>
+                          )}
+                          {todo.files && todo.files.length > 0 && (
+                            <span className={styles.metaBadge}>
+                              <FileText size={10} /> {todo.files.length} File
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -173,10 +262,45 @@ export default function Todos() {
                             {todo.deadline && (
                               <span><Clock size={12} /> Deadline: {new Date(todo.deadline).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span>
                             )}
-                            {todo.reminderAt && (
-                              <span><Bell size={12} /> Reminder: {new Date(todo.reminderAt).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span>
-                            )}
+                            {todo.reminderType === 'weekly' ? (
+                              <span><Bell size={12} /> Pengingat: Mingguan (sejak dibuat)</span>
+                            ) : todo.reminderAt ? (
+                              <span><Bell size={12} /> Pengingat: {new Date(todo.reminderAt).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                            ) : null}
                           </div>
+
+                          {/* Supporting Documents List */}
+                          {todo.files && todo.files.length > 0 && (
+                            <div className={styles.detailAttachments}>
+                              <p className={styles.attachmentsTitle}>Dokumen Pendukung ({todo.files.length}):</p>
+                              <div className={styles.attachmentsGrid}>
+                                {todo.files.map((file, idx) => {
+                                  const isImage = file.type.startsWith('image/')
+                                  return (
+                                    <div key={idx} className={styles.attachmentCard} onClick={() => handleViewFile(file)}>
+                                      {isImage ? (
+                                        <div className={styles.imgPreview}>
+                                          <img src={getFileUrl(file)} alt={file.name} />
+                                        </div>
+                                      ) : (
+                                        <div className={styles.docIcon}>
+                                          {getFileIcon(file.type)}
+                                        </div>
+                                      )}
+                                      <div className={styles.attachmentInfo}>
+                                        <span className={styles.attachmentName} title={file.name}>
+                                          {file.name}
+                                        </span>
+                                        <span className={styles.attachmentSize}>
+                                          {formatSize(file.size)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          )}
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -226,17 +350,92 @@ export default function Todos() {
                   <input id="todo-deadline" type="datetime-local" className={styles.input}
                     value={form.deadline} onChange={e => setForm(f => ({ ...f, deadline: e.target.value }))} />
                 </FormField>
-                <FormField label="Reminder (Notifikasi)">
-                  <input id="todo-reminder" type="datetime-local" className={styles.input}
-                    value={form.reminderAt} onChange={e => setForm(f => ({ ...f, reminderAt: e.target.value }))} />
+                <FormField label="Pengingat (Notifikasi)">
+                  <select
+                    id="todo-reminder-type"
+                    className={styles.input}
+                    value={form.reminderType || 'none'}
+                    onChange={e => setForm(f => ({ ...f, reminderType: e.target.value, reminderAt: e.target.value === 'once' ? f.reminderAt : '' }))}
+                  >
+                    <option value="none">Tidak Ada</option>
+                    <option value="once">Satu Kali (Tanggal & Jam)</option>
+                    <option value="weekly">Mingguan (Sejak Dibuat)</option>
+                  </select>
+                </FormField>
+
+                {form.reminderType === 'once' && (
+                  <FormField label="Waktu Pengingat">
+                    <input
+                      id="todo-reminder-time"
+                      type="datetime-local"
+                      className={styles.input}
+                      value={form.reminderAt}
+                      onChange={e => setForm(f => ({ ...f, reminderAt: e.target.value }))}
+                    />
+                  </FormField>
+                )}
+
+                {form.reminderType === 'weekly' && (
+                  <div className={styles.reminderInfo}>
+                    <Bell size={12} style={{ marginRight: 4 }} />
+                    Notifikasi akan dikirimkan setiap minggu dari sejak tugas ini dibuat.
+                  </div>
+                )}
+
+                <FormField label="Dokumen Pendukung">
+                  <div className={styles.uploadArea}>
+                    <label htmlFor="todo-files-input" className={styles.uploadLabel}>
+                      <UploadCloud size={20} />
+                      <span>Pilih File (Maksimal 15MB)</span>
+                    </label>
+                    <input
+                      id="todo-files-input"
+                      type="file"
+                      multiple
+                      className={styles.fileInput}
+                      onChange={handleFileSelect}
+                    />
+                  </div>
+
+                  {selectedFiles.length > 0 && (
+                    <div className={styles.fileList}>
+                      {selectedFiles.map((file, idx) => (
+                        <div key={idx} className={styles.fileItem}>
+                          <span className={styles.fileName}>{file.name}</span>
+                          <span className={styles.fileSize}>({formatSize(file.size)})</span>
+                          <button
+                            type="button"
+                            className={styles.removeFileBtn}
+                            onClick={() => handleRemoveFile(idx)}
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </FormField>
               </div>
               <div className={styles.modalActions}>
-                <button className={styles.cancelBtn} onClick={() => setShowForm(false)}>Batal</button>
+                <button className={styles.cancelBtn} onClick={() => { setShowForm(false); setSelectedFiles([]); setForm(DEFAULT_FORM); }}>Batal</button>
                 <button id="todo-save" className={styles.saveBtn} onClick={handleAdd}>Tambah</button>
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Zoom Lightbox */}
+      <AnimatePresence>
+        {zoomPhotoUrl && (
+          <div className={styles.zoomOverlay} onClick={() => setZoomPhotoUrl(null)}>
+            <div className={styles.zoomContainer} onClick={e => e.stopPropagation()}>
+              <img src={zoomPhotoUrl} alt="Dokumen Tugas" className={styles.zoomImage} />
+              <button className={styles.zoomClose} onClick={() => setZoomPhotoUrl(null)}>
+                <X size={20} />
+              </button>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </div>
