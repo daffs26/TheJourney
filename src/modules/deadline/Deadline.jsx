@@ -242,7 +242,7 @@ export default function Deadline() {
             gap: 'var(--space-2)', fontSize: 'var(--font-size-sm)'
           }}
         >
-          <Plus size={16} /> Kelola Tugas di To-Do
+          <Plus size={16} /> Kelola Tugas di Halaman Tugas
         </button>
       </div>
     </div>

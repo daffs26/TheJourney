@@ -21,7 +21,7 @@ db.version(4).stores({
   // Jadwal Kuliah (weekly schedule)
   schedules: '++id, courseId, day, startTime, endTime, room, color, createdAt',
 
-  // To-Do
+  // Tugas
   todos: '++id, title, description, category, priority, deadline, reminderAt, completed, completedAt, parentId, courseId, createdAt',
 
   // AI Chat History

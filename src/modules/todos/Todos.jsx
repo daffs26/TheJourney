@@ -137,7 +137,7 @@ export default function Todos() {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerTop}>
-          <h1 className={styles.title}>To-Do</h1>
+          <h1 className={styles.title}>Tugas</h1>
           <div className={styles.headerActions}>
             <button className={styles.filterBtn} onClick={() => setShowFilter(v => !v)}>
               <Filter size={16} />

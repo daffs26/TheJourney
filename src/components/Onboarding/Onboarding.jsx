@@ -20,7 +20,7 @@ const steps = [
   {
     icon: CheckSquare,
     title: 'Jangan Sampai\nAda yang Terlewat',
-    subtitle: 'To-do list dengan reminder otomatis agar tugasmu selesai tepat waktu.',
+    subtitle: 'Daftar Tugas dengan reminder otomatis agar tugasmu selesai tepat waktu.',
     color: '#10B981',
   },
 ]

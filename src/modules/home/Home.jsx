@@ -17,7 +17,7 @@ const MODULES = [
   { id: 'courses',  label: 'Mata Kuliah',    icon: BookOpen,      path: '/courses',  color: 'var(--color-mod-courses)',  size: 'large' },
   { id: 'schedule', label: 'Jadwal',          icon: Calendar,      path: '/schedule', color: 'var(--color-mod-schedule)', size: 'large' },
   // Row 2 — Secondary
-  { id: 'todos',    label: 'To-Do',           icon: CheckSquare,   path: '/todos',    color: 'var(--color-mod-todo)',     size: 'medium' },
+  { id: 'todos',    label: 'Tugas',           icon: CheckSquare,   path: '/todos',    color: 'var(--color-mod-todo)',     size: 'medium' },
   { id: 'documents',label: 'Dokumen',         icon: FileText,      path: '/documents',color: 'var(--color-info)',         size: 'medium' },
   // Row 3
   { id: 'finance',  label: 'Keuangan',        icon: Wallet,        path: '/finance',  color: 'var(--color-mod-finance)',  size: 'medium' },
